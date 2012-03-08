@@ -1,10 +1,9 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxCv.h"
-#include "ofxFaceTrackerThreaded.h"
-#include "ofxXmlSettings.h"
-#include "Graph.h"
+#include "faceTrackerManager.h"
+#include "animationManager.h"
+
 
 class ofApp : public ofBaseApp {
 public:
@@ -13,18 +12,14 @@ public:
 	void draw();
 	void keyPressed(int key);
 	void mouseMoved(int x, int y);
+    //void mouseDragged(int x, int y, int button);
+    //void mousePressed(int x, int y, int button);
+    //void mouseReleased(int x, int y, int button);
+    
+    faceTrackerManager FTM;
+    
+    animationManager AM;
+    
+    
 	
-	vector<Graph> graphs, expressionGraphs;
-	
-	bool enabled;
-	ofVideoGrabber cam;
-	ofxFaceTrackerThreaded tracker;
-	ExpressionClassifier classifier;
-	
-	ofVec2f position;
-	float scale;
-	ofVec3f orientation;
-	
-	cv::Mat translation, rotation;
-	ofMatrix4x4 pose;
 };
