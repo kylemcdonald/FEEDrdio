@@ -97,6 +97,7 @@
 		27065BD915035637000450CD /* RtMidi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RtMidi.cpp; path = ../../../addons/ofxMidi/src/rtmidi/RtMidi.cpp; sourceTree = SOURCE_ROOT; };
 		27065BDA15035637000450CD /* RtMidi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RtMidi.h; path = ../../../addons/ofxMidi/src/rtmidi/RtMidi.h; sourceTree = SOURCE_ROOT; };
 		27065C2B15035831000450CD /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
+		2721E7A91509373F0081F0AC /* ofxFaceTrackerThreaded.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxFaceTrackerThreaded.h; path = ../../../addons/ofxFaceTracker/src/ofxFaceTrackerThreaded.h; sourceTree = SOURCE_ROOT; };
 		27341798150573F3005005D5 /* Graph.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Graph.cpp; sourceTree = "<group>"; };
 		2734179A15057418005005D5 /* fixed_deque.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fixed_deque.h; sourceTree = "<group>"; };
 		275255611502B2C600DCE89E /* Graph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Graph.h; path = src/Graph.h; sourceTree = SOURCE_ROOT; };
@@ -348,6 +349,7 @@
 		306582F2145EFD0C0015FD7B /* src */ = {
 			isa = PBXGroup;
 			children = (
+				2721E7A91509373F0081F0AC /* ofxFaceTrackerThreaded.h */,
 				306582F3145EFD0C0015FD7B /* Expression.cpp */,
 				306582F4145EFD0C0015FD7B /* Expression.h */,
 				306582F5145EFD0C0015FD7B /* ExpressionClassifier.cpp */,

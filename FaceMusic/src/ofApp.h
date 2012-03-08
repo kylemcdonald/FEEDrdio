@@ -2,7 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxCv.h"
-#include "ofxFaceTracker.h"
+#include "ofxFaceTrackerThreaded.h"
 #include "Graph.h"
 
 class ofApp : public ofBaseApp {
