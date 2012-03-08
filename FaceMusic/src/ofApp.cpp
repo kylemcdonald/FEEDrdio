@@ -32,6 +32,7 @@ void ofApp::setup() {
 	graphs[8].setup("y position", 9, 8.40);
 	graphs[9].setup("scale", 10, 0.10);
 	graphs[10].setup("activity", 11);
+	graphs[10].setMinMaxRange(0, 2);
 	
 	keyPressed('l');
 }

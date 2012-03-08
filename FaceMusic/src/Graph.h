@@ -39,9 +39,12 @@ private:
 	float activitySmoothing, activity;
 	
 	fixed_deque<float> buffer, derivative;
+	ofMesh bufferPolyline, derivativePolyline;
+	ofRectangle bufferBox, derivativeBox;
 	
-	ofPolyline buildPolyline(const deque<float>& buffer);
-	float drawBuffer(ofPolyline& line, float threshold, int x, int y, int width, int height);
+	ofRectangle getBoundingBox(const deque<float>& buffer);
+	ofMesh buildPolyline(const deque<float>& buffer);
+	float drawBuffer(ofMesh& line, ofRectangle& box, float threshold, int x, int y, int width, int height);
 	void sendMidi() const;
 	
 	int midiNote;

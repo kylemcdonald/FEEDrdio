@@ -114,9 +114,25 @@ void Graph::addSample(float sample) {
 	} else {
 		threshold = ofLerp(curThreshold, threshold, smoothing);
 	}
+	bufferPolyline = buildPolyline(buffer);
+	derivativePolyline = buildPolyline(derivative);
+	
+	bufferBox = getBoundingBox(buffer);
+	derivativeBox = getBoundingBox(derivative);
+	/*
+	if(minRange != 0 || maxRange != 0) {
+		bufferBox.height = MAX(bufferBox.y + bufferBox.height, maxRange) - bufferBox.y;
+		bufferBox.y = MIN(bufferBox.y, minRange);
+	}
+	*/
+	if(bufferBox.height > 0) {
+		normalized = ofMap(buffer.back(), bufferBox.y, bufferBox.y + bufferBox.height, 0, 1);
+	}
+	if(derivativeBox.height > 0) {
+		normalizedDerivative = ofMap(derivative.back(), derivativeBox.y, derivativeBox.y + derivativeBox.height, 0, 1);
+	}
 	
 	activity = ofLerp(normalizedDerivative, activity, activitySmoothing);
-	
 	sendMidi();
 }
 
@@ -181,16 +197,14 @@ void Graph::draw(int x, int y) {
 	ofPopStyle();
 	
 	ofSetHexColor(0xec008c);
-	ofPolyline derivativePolyline = buildPolyline(derivative);
-	normalizedDerivative = drawBuffer(derivativePolyline, threshold, 0, 0, width, height);
+	drawBuffer(derivativePolyline, derivativeBox, threshold, 0, 0, width, height);
 	
 	ofSetColor(255);
-	ofPolyline bufferPolyline = buildPolyline(buffer);
-	normalized = drawBuffer(bufferPolyline, 0, 0, 0, width, height);
+	drawBuffer(bufferPolyline, bufferBox, 0, 0, 0, width, height);
 	
 	ofSetColor(255);
 	drawString(name, 5, 10);
-	drawString(ofToString(curMin) + " / " + ofToString(curMax), 5, 18);
+	drawString(ofToString(bufferBox.y) + " / " + ofToString(bufferBox.height), 5, 18);
 	if(threshold != 0) {
 		drawString(ofToString(threshold, 4), 5, 26);
 	}
@@ -199,35 +213,43 @@ void Graph::draw(int x, int y) {
 	ofPopMatrix();
 }
 
-ofPolyline Graph::buildPolyline(const deque<float>& buffer) {
-	ofPolyline line;
+ofMesh Graph::buildPolyline(const deque<float>& buffer) {
+	ofMesh line;
+	line.setMode(OF_PRIMITIVE_LINE_STRIP);
 	for(int i = 0; i < buffer.size(); i++) {
 		line.addVertex(ofVec2f(i, buffer[i]));
 	}
 	return line;
 }
 
-float Graph::drawBuffer(ofPolyline& line, float threshold, int x, int y, int width, int height) {
-	ofPushMatrix();
-	ofRectangle box = line.getBoundingBox();
-	curMin = box.y;
-	curMax = box.y + box.height;
-	if(minRange != 0 || maxRange != 0) {
-		box.height = MAX(curMax, maxRange) - box.y;
-		box.y = MIN(curMin, minRange);
+ofRectangle Graph::getBoundingBox(const deque<float>& buffer) {
+	ofRectangle box;
+	box.x = 0;
+	box.width = buffer.size();
+	float curMin, curMax;
+	for(int i = 0; i < buffer.size(); i++) {
+		if(i == 0 || buffer[i] < curMin) {
+			curMin = buffer[i];
+		}
+		if(i == 0 || buffer[i] > curMax) {
+			curMax = buffer[i];
+		}
 	}
+	box.y = curMin;
+	box.height = curMax - curMin;
+	return box;
+}
+
+float Graph::drawBuffer(ofMesh& line, ofRectangle& box, float threshold, int x, int y, int width, int height) {
+	ofPushMatrix();
 	ofVec2f min(box.x, box.y), max(box.x + box.width, box.y + box.height);
-	glMap(min, max, ofVec2f(0, height), ofVec2f(width, 0));
+	glMap(box, ofRectangle(0, 0, width, height));
+	//glMap(min, max, ofVec2f(0, height), ofVec2f(width, 0));
 	line.draw();
 	ofPopMatrix();
 	if(threshold != 0 && box.height != 0) {
 		float mappedThreshold = ofMap(threshold, box.y, box.y + box.height, height, 0, true);
 		ofLine(0, mappedThreshold, width, mappedThreshold);
-	}
-	if(buffer.empty() || box.height == 0) {
-		return 0;
-	} else {
-		return ofMap(buffer.back(), box.y, box.y + box.height, 0, 1);
 	}
 }
 
