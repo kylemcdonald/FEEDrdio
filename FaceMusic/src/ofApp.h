@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxCv.h"
 #include "ofxFaceTrackerThreaded.h"
+#include "ofxXmlSettings.h"
 #include "Graph.h"
 
 class ofApp : public ofBaseApp {
@@ -17,7 +18,7 @@ public:
 	
 	bool enabled;
 	ofVideoGrabber cam;
-	ofxFaceTracker tracker;
+	ofxFaceTrackerThreaded tracker;
 	ExpressionClassifier classifier;
 	
 	ofVec2f position;

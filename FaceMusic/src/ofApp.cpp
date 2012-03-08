@@ -7,11 +7,18 @@ void ofApp::setup() {
 	ofSetVerticalSync(true);
 	ofSetFrameRate(60);
 	ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL_BILLBOARD);
-	enabled = true;
 	
-	cam.initGrabber(1280, 720);
-	tracker.setup();
+	ofxXmlSettings xml;
+	xml.loadFile("settings.xml");
+	xml.pushTag("camera");
+	int camWidth = xml.getValue("width", 640), camHeight = xml.getValue("height", 480);
+	xml.popTag();
+	cam.initGrabber(camWidth, camHeight);
+	ofSetWindowShape(camWidth, camHeight);
+	
 	tracker.setRescale(.5);
+	tracker.setup();
+	enabled = true;
 	
 	graphs.resize(11);
 	graphs[0].setup("mouth width", 1, 1.65);

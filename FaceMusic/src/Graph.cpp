@@ -62,7 +62,9 @@ Graph::Graph()
 ,activity(0)
 ,activitySmoothing(.99)
 ,midiNote(0)
-,hoverState(false) {
+,hoverState(false)
+,minRange(0)
+,maxRange(0) {
 	setupResources();
 	setSize(128, 32);
 }
@@ -82,6 +84,11 @@ void Graph::setSize(int width, int height) {
 	this->height = height;
 	buffer.setMaxSize(width);
 	derivative.setMaxSize(width);
+}
+
+void Graph::setMinMaxRange(float minRange, float maxRange) {
+	this->minRange = minRange;
+	this->maxRange = maxRange;
 }
 
 void Graph::setThreshold(float threshold) {
@@ -143,8 +150,8 @@ float Graph::getActivity() const {
 }
 
 void Graph::clear() {
-	derivative.clear();
-	buffer.clear();
+	//derivative.clear();
+	//buffer.clear();
 	// don't reset the threshold, we want to keep it as a guess
 }
 
@@ -174,27 +181,41 @@ void Graph::draw(int x, int y) {
 	ofPopStyle();
 	
 	ofSetHexColor(0xec008c);
-	normalizedDerivative = drawBuffer(derivative, threshold, 0, 0, width, height);
+	ofPolyline derivativePolyline = buildPolyline(derivative);
+	normalizedDerivative = drawBuffer(derivativePolyline, threshold, 0, 0, width, height);
+	
 	ofSetColor(255);
-	normalized = drawBuffer(buffer, 0, 0, 0, width, height);
+	ofPolyline bufferPolyline = buildPolyline(buffer);
+	normalized = drawBuffer(bufferPolyline, 0, 0, 0, width, height);
 	
 	ofSetColor(255);
 	drawString(name, 5, 10);
+	drawString(ofToString(curMin) + " / " + ofToString(curMax), 5, 18);
 	if(threshold != 0) {
-		drawString(ofToString(threshold, 4), 5, 18);
+		drawString(ofToString(threshold, 4), 5, 26);
 	}
 	
 	ofPopStyle();
 	ofPopMatrix();
 }
 
-float Graph::drawBuffer(const deque<float>& buffer, float threshold, int x, int y, int width, int height) const {
+ofPolyline Graph::buildPolyline(const deque<float>& buffer) {
 	ofPolyline line;
 	for(int i = 0; i < buffer.size(); i++) {
 		line.addVertex(ofVec2f(i, buffer[i]));
 	}
+	return line;
+}
+
+float Graph::drawBuffer(ofPolyline& line, float threshold, int x, int y, int width, int height) {
 	ofPushMatrix();
 	ofRectangle box = line.getBoundingBox();
+	curMin = box.y;
+	curMax = box.y + box.height;
+	if(minRange != 0 || maxRange != 0) {
+		box.height = MAX(curMax, maxRange) - box.y;
+		box.y = MIN(curMin, minRange);
+	}
 	ofVec2f min(box.x, box.y), max(box.x + box.width, box.y + box.height);
 	glMap(min, max, ofVec2f(0, height), ofVec2f(width, 0));
 	line.draw();

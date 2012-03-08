@@ -13,6 +13,10 @@
 		27065BDE15035637000450CD /* RtMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27065BD915035637000450CD /* RtMidi.cpp */; };
 		27065C2C15035831000450CD /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27065C2B15035831000450CD /* CoreMIDI.framework */; };
 		27341799150573F3005005D5 /* Graph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27341798150573F3005005D5 /* Graph.cpp */; };
+		27C21C7C1509545400A5939B /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27C21C751509545400A5939B /* tinyxml.cpp */; };
+		27C21C7D1509545400A5939B /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27C21C771509545400A5939B /* tinyxmlerror.cpp */; };
+		27C21C7E1509545400A5939B /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27C21C781509545400A5939B /* tinyxmlparser.cpp */; };
+		27C21C7F1509545400A5939B /* ofxXmlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27C21C7A1509545400A5939B /* ofxXmlSettings.cpp */; };
 		30658268145EFACE0015FD7B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30658265145EFACE0015FD7B /* main.cpp */; };
 		30658269145EFACE0015FD7B /* ofApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30658266145EFACE0015FD7B /* ofApp.cpp */; };
 		306582F9145EFD0C0015FD7B /* CLM.cc in Sources */ = {isa = PBXBuildFile; fileRef = 306582C4145EFD0C0015FD7B /* CLM.cc */; };
@@ -101,6 +105,12 @@
 		27341798150573F3005005D5 /* Graph.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Graph.cpp; sourceTree = "<group>"; };
 		2734179A15057418005005D5 /* fixed_deque.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fixed_deque.h; sourceTree = "<group>"; };
 		275255611502B2C600DCE89E /* Graph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Graph.h; path = src/Graph.h; sourceTree = SOURCE_ROOT; };
+		27C21C751509545400A5939B /* tinyxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tinyxml.cpp; path = ../../../addons/ofxXmlSettings/libs/tinyxml.cpp; sourceTree = SOURCE_ROOT; };
+		27C21C761509545400A5939B /* tinyxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tinyxml.h; path = ../../../addons/ofxXmlSettings/libs/tinyxml.h; sourceTree = SOURCE_ROOT; };
+		27C21C771509545400A5939B /* tinyxmlerror.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tinyxmlerror.cpp; path = ../../../addons/ofxXmlSettings/libs/tinyxmlerror.cpp; sourceTree = SOURCE_ROOT; };
+		27C21C781509545400A5939B /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tinyxmlparser.cpp; path = ../../../addons/ofxXmlSettings/libs/tinyxmlparser.cpp; sourceTree = SOURCE_ROOT; };
+		27C21C7A1509545400A5939B /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxXmlSettings.cpp; path = ../../../addons/ofxXmlSettings/src/ofxXmlSettings.cpp; sourceTree = SOURCE_ROOT; };
+		27C21C7B1509545400A5939B /* ofxXmlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxXmlSettings.h; path = ../../../addons/ofxXmlSettings/src/ofxXmlSettings.h; sourceTree = SOURCE_ROOT; };
 		3000D977145E65A2009FC3EC /* Project.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Project.xcconfig; sourceTree = "<group>"; };
 		30658265145EFACE0015FD7B /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		30658266145EFACE0015FD7B /* ofApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofApp.cpp; sourceTree = "<group>"; };
@@ -294,6 +304,38 @@
 			);
 			name = rtmidi;
 			path = ../../../addons/ofxMidi/src/rtmidi;
+			sourceTree = SOURCE_ROOT;
+		};
+		27C21C731509545400A5939B /* ofxXmlSettings */ = {
+			isa = PBXGroup;
+			children = (
+				27C21C741509545400A5939B /* libs */,
+				27C21C791509545400A5939B /* src */,
+			);
+			name = ofxXmlSettings;
+			path = ../../../addons/ofxXmlSettings;
+			sourceTree = SOURCE_ROOT;
+		};
+		27C21C741509545400A5939B /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				27C21C751509545400A5939B /* tinyxml.cpp */,
+				27C21C761509545400A5939B /* tinyxml.h */,
+				27C21C771509545400A5939B /* tinyxmlerror.cpp */,
+				27C21C781509545400A5939B /* tinyxmlparser.cpp */,
+			);
+			name = libs;
+			path = ../../../addons/ofxXmlSettings/libs;
+			sourceTree = SOURCE_ROOT;
+		};
+		27C21C791509545400A5939B /* src */ = {
+			isa = PBXGroup;
+			children = (
+				27C21C7A1509545400A5939B /* ofxXmlSettings.cpp */,
+				27C21C7B1509545400A5939B /* ofxXmlSettings.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxXmlSettings/src;
 			sourceTree = SOURCE_ROOT;
 		};
 		306582BE145EFCE30015FD7B /* ofxCv */ = {
@@ -641,6 +683,7 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				27C21C731509545400A5939B /* ofxXmlSettings */,
 				27065BC41503561F000450CD /* ofxMidi */,
 				306582BF145EFCE60015FD7B /* ofxFaceTracker */,
 				306582BE145EFCE30015FD7B /* ofxCv */,
@@ -838,6 +881,10 @@
 				27065BDD15035637000450CD /* ofxMidiOut.cpp in Sources */,
 				27065BDE15035637000450CD /* RtMidi.cpp in Sources */,
 				27341799150573F3005005D5 /* Graph.cpp in Sources */,
+				27C21C7C1509545400A5939B /* tinyxml.cpp in Sources */,
+				27C21C7D1509545400A5939B /* tinyxmlerror.cpp in Sources */,
+				27C21C7E1509545400A5939B /* tinyxmlparser.cpp in Sources */,
+				27C21C7F1509545400A5939B /* ofxXmlSettings.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
