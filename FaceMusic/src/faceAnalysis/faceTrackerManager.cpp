@@ -4,12 +4,11 @@ using namespace ofxCv;
 using namespace cv;
 
 void faceTrackerManager::setup() {
-    
-    ofxXmlSettings xml;
+	ofxXmlSettings xml;
 	xml.loadFile("settings.xml");
 	xml.pushTag("camera");
-    camWidth = xml.getValue("width", 640);
-    camHeight = xml.getValue("height", 480);
+	camWidth = xml.getValue("width", 640);
+	camHeight = xml.getValue("height", 480);
 	xml.popTag();
 	cam.initGrabber(camWidth, camHeight);
 	
@@ -29,6 +28,7 @@ void faceTrackerManager::setup() {
 	graphs[8].setup("y position", 9, 8.40);
 	graphs[9].setup("scale", 10, 0.10);
 	graphs[10].setup("activity", 11);
+	graphs[10].setMinMaxRange(0, 2);
 	
 	keyPressed('l');
 }
@@ -70,10 +70,10 @@ void faceTrackerManager::update() {
 			}
 		}
 	}
-    
-    if (tracker.getFound()){
-        FA.calculate(tracker);
-    }
+	
+	if (tracker.getFound()){
+		FA.calculate(tracker);
+	}
 }
 
 void faceTrackerManager::draw() {
@@ -104,16 +104,16 @@ void faceTrackerManager::draw() {
 	
 	ofDrawBitmapString(ofToString((int) ofGetFrameRate()), ofGetWidth() - 20, ofGetHeight() - 10);
 	drawHighlightString(
-                        string() +
-                        "tab - pause input\n" +
-                        "r - reset expressions\n" +
-                        "e - add expression\n" +
-                        "s - add sample\n" +
-                        "s - save expressions\n" +
-                        "l - load expressions\n" +
-                        "c - send selected control change\n" +
-                        "n - send selected note\n",
-                        14, ofGetHeight() - 12 * 12);
+											string() +
+											"tab - pause input\n" +
+											"r - reset expressions\n" +
+											"e - add expression\n" +
+											"s - add sample\n" +
+											"s - save expressions\n" +
+											"l - load expressions\n" +
+											"c - send selected control change\n" +
+											"n - send selected note\n",
+											14, ofGetHeight() - 12 * 12);
 }
 
 void faceTrackerManager::keyPressed(int key) {

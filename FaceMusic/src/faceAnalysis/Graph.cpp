@@ -243,8 +243,8 @@ ofRectangle Graph::getBoundingBox(const deque<float>& buffer) {
 float Graph::drawBuffer(ofMesh& line, ofRectangle& box, float threshold, int x, int y, int width, int height) {
 	ofPushMatrix();
 	ofVec2f min(box.x, box.y), max(box.x + box.width, box.y + box.height);
-	glMap(box, ofRectangle(0, 0, width, height));
-	//glMap(min, max, ofVec2f(0, height), ofVec2f(width, 0));
+	//glMap(box, ofRectangle(0, 0, width, height));
+	glMap(min, max, ofVec2f(0, height), ofVec2f(width, 0));
 	line.draw();
 	ofPopMatrix();
 	if(threshold != 0 && box.height != 0) {
