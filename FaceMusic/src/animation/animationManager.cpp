@@ -76,7 +76,7 @@ void animationManager::setup() {
     
     box2d.init();
 		box2d.setGravity(0, 4);
-		box2d.createBounds(0,0,width,height);
+		box2d.createBounds(0,0,640,480);
     box2d.setFPS(30.0);
     box2d.registerGrabbing();
     
@@ -318,10 +318,10 @@ void animationManager::update() {
 
 ofVec2f animationManager::getAttractor() {
 	switch(side) {
-		case 0:	return ofVec2f(width, height);
-		case 1: return ofVec2f(0, height);
+		case 0:	return ofVec2f(640, 480);
+		case 1: return ofVec2f(0, 480);
 	}
-	return ofVec2f(width / 2, height / 2);
+	return ofVec2f(640 / 2, 480 / 2);
 }
 
 void animationManager::drawImageWithInfo(ofImage * temp, faceFeatureAnalysis & ft, ofxBox2dConvexPoly & circle, ofPoint offset, float scaler = 1, bool bFlipHoriz = true, float angleAdd = 0){
@@ -364,7 +364,10 @@ void animationManager::drawImageWithInfo(ofImage * temp, faceFeatureAnalysis & f
 
 
 void animationManager::draw() {
-    
+    float scaleAmount = height / 480.;
+		ofTranslate(width / 2, height / 2);
+    ofScale(scaleAmount, scaleAmount);
+		ofTranslate(-640 / 2, -480 / 2);
         
     ofSetColor(255,255,255,100);
 

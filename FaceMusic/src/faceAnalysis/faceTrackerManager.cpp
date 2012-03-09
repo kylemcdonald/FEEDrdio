@@ -6,10 +6,12 @@ using namespace cv;
 void faceTrackerManager::setup() {
 	ofxXmlSettings xml;
 	xml.loadFile("settings.xml");
+	
 	xml.pushTag("camera");
 	camWidth = xml.getValue("width", 640);
 	camHeight = xml.getValue("height", 480);
 	xml.popTag();
+	
 	xml.pushTag("screen");
 	width = xml.getValue("width", 640);
 	height = xml.getValue("height", 480);
