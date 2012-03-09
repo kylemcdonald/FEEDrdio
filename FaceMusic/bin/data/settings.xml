@@ -1,4 +1,22 @@
+<!-- left is 0, right is 1 -->
+<side>0</side>
+
+<fullscreen>1</fullscreen>
+
+<!-- mbp imac have 1280x720, mac air is 640x480 -->
 <camera>
   <width>640</width>
   <height>480</height>
 </camera>
+
+<!-- screen is on the left -->
+<screen>
+  <width>640</width>
+  <height>480</height>
+</screen>
+
+<!-- projector is on the right -->
+<projector>
+  <width>640</width>
+  <height>480</height>
+</projector>

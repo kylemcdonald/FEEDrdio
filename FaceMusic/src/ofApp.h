@@ -10,6 +10,7 @@ public:
 	void setup();
 	void update();
 	void draw();
+	void loadSettings();
 	void keyPressed(int key);
 	void mouseMoved(int x, int y);
 	//void mouseDragged(int x, int y, int button);
@@ -20,6 +21,9 @@ public:
 	
 	animationManager AM;
 	
-	
+	bool fullscreen;
+	int side;
+	int projectorWidth, projectorHeight;
+	int screenWidth, screenHeight;
 	
 };
