@@ -137,6 +137,9 @@ void faceTrackerManager::keyPressed(int key) {
 	if(key == '\t') {
 		enabled = !enabled;
 	}
+	if(key == 'c') {
+		Graph::sendManualNote(96);
+	}
 	if(key == 'r') {
 		classifier.reset();
 		expressionGraphs.clear();

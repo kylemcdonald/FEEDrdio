@@ -327,14 +327,24 @@ void animationManager::update() {
     if (presence > 0.5){
         
         bWasPresentLastFrame = true;
-        if (ofGetElapsedTimef() - lastNonPresenceTime < 1.1 && (lastNonPresenceTime-fistNonPresenceTime) > 0.3){
-            float pct = (ofGetElapsedTimef() - lastNonPresenceTime)/1.1;
+				bool didSwitch = false;
+				float curTime = ofGetElapsedTimef();
+				float clickWaitTime = .5; // wait for this much non-face until randomizing
+				float clickingTime = 2; // how long the randomizing lasts
+				float presenceLength = curTime - lastNonPresenceTime;
+				float nonPresenceLength = lastNonPresenceTime - fistNonPresenceTime;
+        if (presenceLength < clickingTime && nonPresenceLength > clickWaitTime) {
+            float pct = pow(ofNormalize(presenceLength, 0, clickingTime), .1f);
             for (int i = 0; i < FA->nFeatures; i++){
-                if (ofRandom(1) > (pct)){
+                if (ofRandomf() > pct){
                     which[i] = ofRandom(0,10000000);
+										didSwitch = true;
                 }
             }
         }
+				if(didSwitch) {
+					Graph::sendManualNote(96);
+				}
         
         for (int i = 0; i < FA->nFeatures; i++){
             ofPoint offsetme;

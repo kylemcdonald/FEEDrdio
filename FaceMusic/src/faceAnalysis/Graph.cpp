@@ -176,6 +176,11 @@ void Graph::addSample(float sample) {
 	sendMidi();
 }
 
+void Graph::sendManualNote(int midiNote) {
+	midi.sendNoteOn(1, midiNote, 127);
+	midi.sendNoteOff(1, midiNote);
+}
+
 void Graph::sendMidi() const {
 	if(getTriggered()) {
 		midi.sendNoteOn(1, midiNote, 127);
