@@ -232,7 +232,7 @@ void Graph::draw(int x, int y) {
 	ofSetColor(255);
 	drawString(name, 5, 10);
 	
-	if(!buffer.empty()) {
+	if(!buffer.empty() && !derivative.empty()) {
 		ofPushMatrix();
 		ofTranslate(width, 0);
 		drawString(ofToString(bufferBox.y, 2) + "<" + (buffer.empty() ? "empty" :  ofToString(buffer.back(), 2)) + "<" + ofToString(bufferBox.y + bufferBox.height, 2), 5, 10);
