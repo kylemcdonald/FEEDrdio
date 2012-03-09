@@ -30,6 +30,10 @@ public:
     void mouseReleased(int x, int y, int button);
     void loadImageSet(vector < ofImage * > & imgs, string partName, ofPolyline & maskShape);
     
+		ofVec2f getAttractor();
+		
+		int width, height;
+		int side;
     
     faceTrackerManager  * FTM;
     faceAnalyzer * FA;

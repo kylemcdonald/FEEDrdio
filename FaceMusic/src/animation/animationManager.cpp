@@ -43,7 +43,14 @@ void animationManager::loadImageSet(vector < ofImage * > & imgs, string partName
 
 
 void animationManager::setup() {
-    
+	ofxXmlSettings xml;
+	xml.loadFile("settings.xml");
+	side = xml.getValue("side", 0);
+	xml.pushTag("projector");
+	width = xml.getValue("width", 640);
+	height = xml.getValue("height", 480);
+	xml.popTag();
+	
     ofEnableAlphaBlending();
     
     
@@ -68,8 +75,8 @@ void animationManager::setup() {
     
     
     box2d.init();
-    box2d.setGravity(0, 4);
-    box2d.createBounds(0,0,640,480);
+		box2d.setGravity(0, 4);
+		box2d.createBounds(0,0,width,height);
     box2d.setFPS(30.0);
     box2d.registerGrabbing();
     
@@ -378,7 +385,7 @@ void animationManager::update() {
         lastNonPresenceTime = ofGetElapsedTimef();
         for (int i = 0; i < FA->nFeatures; i++){
             polys[i].body->SetAwake(true);
-            polys[i].addAttractionPoint(ofPoint(200,200), 3);
+            polys[i].addAttractionPoint(getAttractor(), 3);
         }
         
         for (int i = 0; i < FA->nFeatures; i++){
@@ -410,7 +417,7 @@ void animationManager::update() {
         }
      } else {
          for (int i = 0; i < circles.size(); i++){
-             //circles[i].addAttractionPoint(ofPoint(200,200));
+				     circles[i].addAttractionPoint(getAttractor());
              b2Filter filter;
              filter.categoryBits = 0x0001;
              filter.maskBits = 0xFFFF;
@@ -427,6 +434,13 @@ void animationManager::update() {
 	ofBackground(0,0,0); //Grey background, NY style
 }
 
+ofVec2f animationManager::getAttractor() {
+	switch(side) {
+		case 0:	return ofVec2f(width, height);
+		case 1: return ofVec2f(0, height);
+	}
+	return ofVec2f(width / 2, height / 2);
+}
 
 void animationManager::drawImageWithInfo(ofImage * temp, faceFeatureAnalysis & ft, ofxBox2dConvexPoly & circle, ofPoint offset, float scaler = 1, bool bFlipHoriz = true, float angleAdd = 0){
     float imgSize;

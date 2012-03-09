@@ -17,6 +17,7 @@ public:
 	
 	vector<Graph> graphs, expressionGraphs;
 	
+	int width, height;
 	int camWidth, camHeight;
 	bool enabled;
 	ofVideoGrabber cam;

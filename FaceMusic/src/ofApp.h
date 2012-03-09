@@ -20,6 +20,9 @@ public:
 	
 	animationManager AM;
 	
-	
+	bool fullscreen;
+	int side;
+	int projectorWidth, projectorHeight;
+	int screenWidth, screenHeight;
 	
 };
