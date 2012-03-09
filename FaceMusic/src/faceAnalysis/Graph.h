@@ -29,6 +29,8 @@ public:
 	void keyPressed(int key);
 	void mouseMoved(int x, int y);
 	
+	static void sendManualNote(int midiNote);
+	
 //private:
 	int width, height;
 	string name;

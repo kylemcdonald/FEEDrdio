@@ -60,6 +60,10 @@ void animationManager::setup() {
 	ofxXmlSettings xml;
 	xml.loadFile("settings.xml");
 	side = xml.getValue("side", 0);
+	xml.pushTag("camera");
+	camWidth = xml.getValue("width", 640);
+	camHeight = xml.getValue("height", 480);
+	xml.popTag();
 	xml.pushTag("projector");
 	width = xml.getValue("width", 640);
 	height = xml.getValue("height", 480);
@@ -90,7 +94,7 @@ void animationManager::setup() {
     
     box2d.init();
 		box2d.setGravity(0, 4);
-		box2d.createBounds(0,0,width,height);
+		box2d.createBounds(0,0,camWidth,camHeight);
     box2d.setFPS(30.0);
     box2d.registerGrabbing();
     
@@ -339,14 +343,24 @@ void animationManager::update() {
     if (presence > 0.5){
         
         bWasPresentLastFrame = true;
-        if (ofGetElapsedTimef() - lastNonPresenceTime < 1.1 && (lastNonPresenceTime-fistNonPresenceTime) > 0.3){
-            float pct = (ofGetElapsedTimef() - lastNonPresenceTime)/1.1;
+				bool didSwitch = false;
+				float curTime = ofGetElapsedTimef();
+				float clickWaitTime = .5; // wait for this much non-face until randomizing
+				float clickingTime = 2; // how long the randomizing lasts
+				float presenceLength = curTime - lastNonPresenceTime;
+				float nonPresenceLength = lastNonPresenceTime - fistNonPresenceTime;
+        if (presenceLength < clickingTime && nonPresenceLength > clickWaitTime) {
+            float pct = pow(ofNormalize(presenceLength, 0, clickingTime), .1f);
             for (int i = 0; i < FA->nFeatures; i++){
-                if (ofRandom(1) > (pct)){
+                if (ofRandomf() > pct){
                     which[i] = ofRandom(0,10000000);
+										didSwitch = true;
                 }
             }
         }
+				if(didSwitch) {
+					Graph::sendManualNote(96);
+				}
         
         for (int i = 0; i < FA->nFeatures; i++){
             ofPoint offsetme;
@@ -452,10 +466,10 @@ void animationManager::update() {
 
 ofVec2f animationManager::getAttractor() {
 	switch(side) {
-		case 0:	return ofVec2f(width, height);
-		case 1: return ofVec2f(0, height);
+		case 0:	return ofVec2f(camWidth, camHeight);
+		case 1: return ofVec2f(0, camHeight);
 	}
-	return ofVec2f(width / 2, height / 2);
+	return ofVec2f(camWidth / 2, camHeight / 2);
 }
 
 void animationManager::drawImageWithInfo(ofImage * temp, faceFeatureAnalysis & ft, ofxBox2dConvexPoly & circle, ofPoint offset, float scaler = 1, bool bFlipHoriz = true, float angleAdd = 0){
@@ -498,7 +512,10 @@ void animationManager::drawImageWithInfo(ofImage * temp, faceFeatureAnalysis & f
 
 
 void animationManager::draw() {
-    
+    float scaleAmount = (float) height / camHeight;
+		ofTranslate(width / 2, height / 2);
+    ofScale(scaleAmount, scaleAmount);
+		ofTranslate(-camWidth / 2, -camHeight / 2);
         
     ofSetColor(255,255,255,100);
 

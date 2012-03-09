@@ -33,6 +33,7 @@ public:
     
 		ofVec2f getAttractor();
 		
+		int camWidth, camHeight;
 		int width, height;
 		int side;
     
