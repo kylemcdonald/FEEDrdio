@@ -107,6 +107,19 @@ void animationManager::setup() {
         
         
         
+        transformAdd add;
+        add.scaleAdder = 0;
+        add.angleAdder = 0;
+        add.offsetAdder.set(0,0);
+        transformAdds.push_back(add);
+        
+        /*
+         float scaleAdder;
+         float angleAdder;
+         ofPoint offsetAdder;
+         
+         */
+        
         //        ofxBox2dConvexPoly * poly = new ofxBox2dConvexPoly();
         //        poly->setPhysics(1.0, 0.13, 0.1);
         //        poly->setup(box2d.getWorld(), maskShape);
@@ -151,7 +164,7 @@ void animationManager::setup() {
 }
 
 
-void transform ( ofxBox2dConvexPoly & circle, faceFeatureAnalysis & ffa, ofPoint offset, float angleAdder = 0, float extraScale = 1.0){
+void transform ( ofxBox2dConvexPoly & circle, faceFeatureAnalysis & ffa, transformAdd add, ofPoint offset, float angleAdder = 0, float extraScale = 1.0){
     
     float pct = 0.5f;
     ofPoint circlePos = circle.getPosition()/OFX_BOX2D_SCALE;
@@ -166,8 +179,8 @@ void transform ( ofxBox2dConvexPoly & circle, faceFeatureAnalysis & ffa, ofPoint
     angle += diffAngle;
     while (angle > PI) angle-= TWO_PI;
     while (angle < -PI) angle+= TWO_PI;
-    circle.body->SetTransform(b2Vec2(mixPos.x, mixPos.y), angle );
-    circle.setScale(1.55 * (ffa.dist/2 / 200.0) * extraScale);
+    circle.body->SetTransform(b2Vec2(mixPos.x, mixPos.y), angle + add.angleAdder );
+    circle.setScale(1.55 * (ffa.dist/2 / 200.0) * extraScale + add.scaleAdder);
     circle.body->SetLinearVelocity(b2Vec2(0,0));
     circle.body->SetAngularVelocity(0);
     
@@ -197,6 +210,115 @@ void animationManager::update() {
         presence = 0.6f * presence + 0.6f * 0.0;
     }
     
+    // where the pebbles want to go! 
+    ofPoint facePoint = FTM->tracker.getPosition();
+
+    
+  
+    if (FTM->graphs[2].getTriggered() || FTM->graphs[3].getTriggered()){
+        transformAdds[leye].scaleAdder +=  0.1;
+        transformAdds[reye].scaleAdder += 0.1;
+        transformAdds[leye].scaleAdder = MIN(0.8, transformAdds[leye].scaleAdder);
+        transformAdds[reye].scaleAdder = MIN(0.8, transformAdds[reye].scaleAdder);
+        
+        transformAdds[leye].angleAdder += ofRandom(-transformAdds[leye].scaleAdder*5, transformAdds[leye].scaleAdder*5);
+        transformAdds[reye].angleAdder += ofRandom(-transformAdds[leye].scaleAdder*5, transformAdds[leye].scaleAdder*5);
+        
+        while(transformAdds[leye].angleAdder > PI) transformAdds[leye].angleAdder -= TWO_PI;
+        while(transformAdds[leye].angleAdder < -PI) transformAdds[leye].angleAdder += TWO_PI;
+        
+        
+        facePoint = (int)(ofGetElapsedTimef()) % 2 == 0 ? FA->features[leye]->pos :  FA->features[reye]->pos;
+        
+        while(transformAdds[reye].angleAdder > PI) transformAdds[reye].angleAdder -= TWO_PI;
+        while(transformAdds[reye].angleAdder < -PI) transformAdds[reye].angleAdder += TWO_PI;
+        //transformAdds[reye].angleAdder += ofRandom(-transformAdds[leye].scaleAdder, transformAdds[leye].scaleAdder);
+    } 
+    
+    /*
+     graphs[0].setup("mouth width", 1, 1.65);
+     graphs[1].setup("mouth + jaw", 2, 1.08);
+     graphs[2].setup("eyebrows", 3, 1.22);
+     graphs[3].setup("eye openness", 4, 0.48);
+     graphs[4].setup("x rotation", 5, 0.04);
+     graphs[5].setup("y rotation", 6, 0.04).setBidirectional(true);
+     graphs[6].setup("z rotation", 7, 0.03).setBidirectional(true);
+     graphs[7].setup("x position", 8, 8.40).setBidirectional(true);
+     graphs[8].setup("y position", 9, 8.40).setBidirectional(true);
+     graphs[9].setup("scale", 10, 0.10);
+     graphs[10].setup("activity", 11).setMinMaxRange(1, 2);
+     graphs[11].setup("presence", 12, 0).setMinMaxRange(0, 1);
+     */
+    
+     if (FTM->graphs[7].getTriggered() || FTM->graphs[8].getTriggered() ){
+         
+         transformAdds[nose].scaleAdder +=  0.01;
+         transformAdds[nose].scaleAdder += 0.01;
+         transformAdds[nose].scaleAdder = MIN(0.07, transformAdds[nose].scaleAdder);
+         transformAdds[nose].scaleAdder = MIN(0.07, transformAdds[nose].scaleAdder);
+         transformAdds[nose].angleAdder += ofRandom(-transformAdds[nose].scaleAdder*0.009, transformAdds[nose].scaleAdder*0.009);
+         transformAdds[nose].angleAdder += ofRandom(-transformAdds[nose].scaleAdder*0.009, transformAdds[nose].scaleAdder*0.009);
+         while(transformAdds[nose].angleAdder > PI) transformAdds[nose].angleAdder -= TWO_PI;
+         while(transformAdds[nose].angleAdder < -PI) transformAdds[nose].angleAdder += TWO_PI;
+         
+     }
+    
+    
+    if (FTM->graphs[4].getTriggered() || FTM->graphs[5].getTriggered() || FTM->expressionGraphs[6].getTriggered()){
+        
+        transformAdds[lear].scaleAdder +=  0.05;
+        transformAdds[lear].scaleAdder += 0.05;
+        transformAdds[lear].scaleAdder = MIN(0.2, transformAdds[lear].scaleAdder);
+        transformAdds[lear].scaleAdder = MIN(0.2, transformAdds[lear].scaleAdder);
+        transformAdds[lear].angleAdder += ofRandom(-transformAdds[lear].scaleAdder*0.04, transformAdds[lear].scaleAdder*0.04);
+        transformAdds[lear].angleAdder += ofRandom(-transformAdds[lear].scaleAdder*0.04, transformAdds[lear].scaleAdder*0.04);
+        while(transformAdds[lear].angleAdder > PI) transformAdds[lear].angleAdder -= TWO_PI;
+        while(transformAdds[lear].angleAdder < -PI) transformAdds[lear].angleAdder += TWO_PI;
+        
+        transformAdds[rear].scaleAdder +=  0.05;
+        transformAdds[rear].scaleAdder += 0.05;
+        transformAdds[rear].scaleAdder = MIN(0.2, transformAdds[rear].scaleAdder);
+        transformAdds[rear].scaleAdder = MIN(0.2, transformAdds[rear].scaleAdder);
+        transformAdds[rear].angleAdder += ofRandom(-transformAdds[rear].scaleAdder*0.04, transformAdds[rear].scaleAdder*0.04);
+        transformAdds[rear].angleAdder += ofRandom(-transformAdds[rear].scaleAdder*0.04, transformAdds[rear].scaleAdder*0.04);
+        while(transformAdds[rear].angleAdder > PI) transformAdds[rear].angleAdder -= TWO_PI;
+        while(transformAdds[rear].angleAdder < -PI) transformAdds[rear].angleAdder += TWO_PI;
+
+        transformAdds[chin].scaleAdder +=  0.01;
+        transformAdds[chin].scaleAdder += 0.01;
+        transformAdds[chin].scaleAdder = MIN(0.15, transformAdds[chin].scaleAdder);
+        transformAdds[chin].scaleAdder = MIN(0.15, transformAdds[chin].scaleAdder);
+        transformAdds[chin].angleAdder += ofRandom(-transformAdds[chin].scaleAdder*0.04, transformAdds[chin].scaleAdder*0.04);
+        transformAdds[chin].angleAdder += ofRandom(-transformAdds[chin].scaleAdder*0.04, transformAdds[chin].scaleAdder*0.04);
+        while(transformAdds[chin].angleAdder > PI) transformAdds[chin].angleAdder -= TWO_PI;
+        while(transformAdds[chin].angleAdder < -PI) transformAdds[chin].angleAdder += TWO_PI;
+    }
+    
+    if (FTM->graphs[0].getTriggered() || FTM->graphs[1].getTriggered() || FTM->expressionGraphs[2].getTriggered()){
+        
+        transformAdds[mouth].scaleAdder +=  0.1;
+        transformAdds[mouth].scaleAdder += 0.1;
+        transformAdds[mouth].scaleAdder = MIN(0.5, transformAdds[mouth].scaleAdder);
+        transformAdds[mouth].scaleAdder = MIN(0.5, transformAdds[mouth].scaleAdder);
+        transformAdds[mouth].angleAdder += ofRandom(-transformAdds[mouth].scaleAdder*0.4, transformAdds[mouth].scaleAdder*0.4);
+        transformAdds[mouth].angleAdder += ofRandom(-transformAdds[mouth].scaleAdder*0.4, transformAdds[mouth].scaleAdder*0.4);
+        while(transformAdds[mouth].angleAdder > PI) transformAdds[mouth].angleAdder -= TWO_PI;
+        while(transformAdds[mouth].angleAdder < -PI) transformAdds[mouth].angleAdder += TWO_PI;
+
+        
+        facePoint = FA->features[mouth]->pos;
+    }
+    
+    
+    for (int i = 0; i < transformAdds.size(); i++){
+        transformAdds[i].angleAdder *= 0.97f;
+        transformAdds[i].scaleAdder *= 0.97f;
+        transformAdds[i].offsetAdder *= 0.97f;
+    }
+   
+    
+    
+    
     
     if (presence > 0.5){
         
@@ -214,25 +336,25 @@ void animationManager::update() {
             ofPoint offsetme;
             switch (i){
                 case 0:
-                    transform(polys[i], *FA->features[i], ofPoint(0,0), 0);
+                    transform(polys[i], *FA->features[i], transformAdds[i], ofPoint(0,0), 0);
                     break;
                 case 2:
                 case 6:
                 case 7:
-                    transform(polys[i], *FA->features[i], ofPoint(0,0), PI);
+                    transform(polys[i], *FA->features[i], transformAdds[i], ofPoint(0,0), PI);
                     break;
                 case 5:
                     offsetme.x = 0.4 * 100 * cos(FA->features[i]->angle + PI/4);
                     offsetme.y = 0.4 * 100 * sin(FA->features[i]->angle + PI/4);
-                    transform(polys[i], *FA->features[i], offsetme, PI/4);
+                    transform(polys[i], *FA->features[i], transformAdds[i], offsetme, PI/4);
                     break;
                 case 4:
                     offsetme.x = 0.4 * -100 * cos(FA->features[i]->angle);
                     offsetme.y = 0.4 * -100 * sin(FA->features[i]->angle);
-                    transform(polys[i], *FA->features[i], offsetme);
+                    transform(polys[i], *FA->features[i], transformAdds[i], offsetme);
                     break;
                 default:
-                    transform(polys[i], *FA->features[i], ofPoint(0,0));
+                    transform(polys[i], *FA->features[i], transformAdds[i], ofPoint(0,0));
                     break;
             }
         }
@@ -279,17 +401,13 @@ void animationManager::update() {
     
     
      if (presence > 0.5){
-         ofPoint facePoint = FTM->tracker.getPosition();
-        // if we have a face, let's make the circle go towards the face. 
+         // if we have a face, let's make the circle go towards the face. 
         // otherwise, let's do something else
         for (int i = 0; i < circles.size(); i++){
             
            
-            ofVec2f diff = ofPoint(ofGetMouseX(), ofGetMouseY()) - circles[i].getPosition();
-            diff /= 100.0;
-            
             circles[i].body->SetLinearDamping(0.4);
-            circles[i].addAttractionPoint(facePoint.x, facePoint.y);
+            circles[i].addAttractionPoint(facePoint.x, facePoint.y, 4);
             //(diff.x, diff.y);
             b2Filter filter;
             filter.categoryBits = 0x0002;
@@ -382,31 +500,9 @@ void animationManager::draw() {
     drawImageWithInfo(faceImages[lear][which[lear] % faceImages[lear].size()], FA->lEar, polys[lear],  offsets[lear],  2.0, true, 180);
     drawImageWithInfo(faceImages[rear][which[rear] % faceImages[rear].size()], FA->rEar, polys[rear],  offsets[rear],  2.0, true, 180);
 
-
-    ofSetColor(255,255,255,255);
-
-    float eyeA = 1.0;
-//    float eyeA = MAX(ofMap(ofGetElapsedTimef() - graphs[2].lastTrigger, 0, 0.2, 1,0),ofMap(ofGetElapsedTimef() - graphs[3].lastTrigger, 0, 0.2, 1,0));
-
-    eyeA = MIN(MAX(eyeA, 0), 1);
-
-    drawImageWithInfo(faceImages[reye][which[reye] % faceImages[reye].size()], FA->rEye,  polys[reye], offsets[reye], 2.0, true);
-    drawImageWithInfo(faceImages[leye][which[leye] % faceImages[leye].size()], FA->lEye,  polys[leye], offsets[leye], 2.0, true);
-
-    drawImageWithInfo(faceImages[mouth][which[mouth] % faceImages[mouth].size()], FA->mouth,  polys[mouth], offsets[mouth], 1.6, true);
-    drawImageWithInfo(faceImages[nose][which[nose] % faceImages[nose].size()], FA->nose,  polys[nose], offsets[nose], 2.0, true, 180);
-
-
-    for(int i=0; i<polys.size(); i++) {
-    ofFill();
+    
+    
     ofSetColor(120,120,120,150);
-    //polys[i].draw();
-    }
-
-    //    for (int i = 0; i < maskPolys.size(); i++){
-    //        maskPolys[i].draw();
-    //    }
-        
     ofSetRectMode(OF_RECTMODE_CENTER);
     for (int i = 0; i < circles.size(); i++){
         //circles[i].draw();  
@@ -419,6 +515,22 @@ void animationManager::draw() {
         
     }
     ofSetRectMode(OF_RECTMODE_CORNER);
+    
+
+    ofSetColor(255,255,255,255);
+
+    float eyeA = 1.0;
+
+    eyeA = MIN(MAX(eyeA, 0), 1);
+
+    drawImageWithInfo(faceImages[reye][which[reye] % faceImages[reye].size()], FA->rEye,  polys[reye], offsets[reye], 2.0, true);
+    drawImageWithInfo(faceImages[leye][which[leye] % faceImages[leye].size()], FA->lEye,  polys[leye], offsets[leye], 2.0, true);
+
+    drawImageWithInfo(faceImages[mouth][which[mouth] % faceImages[mouth].size()], FA->mouth,  polys[mouth], offsets[mouth], 1.6, true);
+    drawImageWithInfo(faceImages[nose][which[nose] % faceImages[nose].size()], FA->nose,  polys[nose], offsets[nose], 2.0, true, 180);
+
+
+    
     
 }
 

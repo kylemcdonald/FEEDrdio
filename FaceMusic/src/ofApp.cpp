@@ -20,9 +20,8 @@ void ofApp::update() {
 }
 
 void ofApp::draw() {	
-	// draw debug screen
-	FTM.draw();
-	
+
+	FTM.draw();	
 	// draw projection
 	ofTranslate(FTM.width, 0);
 	AM.draw();

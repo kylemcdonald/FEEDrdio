@@ -8,6 +8,13 @@
 #include "ofxBox2dConvexPoly.h"
 #include "faceTrackerManager.h"
 
+typedef struct {
+  
+    float scaleAdder;
+    float angleAdder;
+    ofPoint offsetAdder;
+    
+} transformAdd;
 
 
 class animationManager {
@@ -49,6 +56,9 @@ public:
     //------------------------------------------------ box 2d
     int chin, forehead, lear, rear, reye, leye, nose, mouth;
     vector < ofPoint >  offsets;
+    
+    vector < transformAdd > transformAdds;
+    
     ofPolyline temp;
     
     float presence;
