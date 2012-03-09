@@ -165,10 +165,10 @@ void Graph::addSample(float sample) {
 		buffer.back() = ofClamp(buffer.back(), minRange, maxRange);
 	}
 	
-	if(bufferBox.height > 0) {
+	if(bufferBox.height > FLT_EPSILON) {
 		normalized = ofMap(buffer.back(), bufferBox.y, bufferBox.y + bufferBox.height, 0, 1);
 	}
-	if(derivative.size() > 0 && derivativeBox.height > 0) {
+	if(derivative.size() > 0 && derivativeBox.height > FLT_EPSILON) {
 		normalizedDerivative = ofMap(derivative.back(), derivativeBox.y, derivativeBox.y + derivativeBox.height, 0, 1);
 	}
 	
