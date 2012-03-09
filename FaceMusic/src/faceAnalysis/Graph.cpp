@@ -37,17 +37,17 @@ void setupResources() {
 	}
 }
 
-void drawString(string text, int x, int y) {
+void Graph::drawString(string text, int x, int y) const {
 	ofPushStyle();
-	ofSetColor(0);
 	ofFill();
 	ofRectangle box = font.getStringBoundingBox(text, x, y);
 	box.x -= 1;
 	box.y -= 1;
 	box.width += 2;
 	box.height += 2;
+	ofSetColor(noData ? 64 : 0);
 	ofRect(box);
-	ofSetColor(255);
+	ofSetColor(noData ? 192 : 255);
 	font.drawString(text, x, y);
 	ofPopStyle();
 }
@@ -66,7 +66,8 @@ Graph::Graph()
 ,hoverState(false)
 ,minRange(0)
 ,maxRange(0)
-,bidirectional(false) {
+,bidirectional(false)
+,noData(true) {
 	setupResources();
 	setSize(128, 32);
 }
@@ -108,6 +109,8 @@ void Graph::setSmoothing(float downSmoothing, float upSmoothing) {
 }
 
 void Graph::addSample(float sample) {
+	noData = false;
+	
 	if(!buffer.empty() && (upSmoothing != 0 || downSmoothing != 0)) {
 		if(sample > buffer.back()) {
 			sample = ofLerp(sample, buffer.back(), upSmoothing);
@@ -193,6 +196,7 @@ float Graph::getActivity() const {
 }
 
 void Graph::clear() {
+	noData = true;
 	//derivative.clear();
 	//buffer.clear();
 	// don't reset the threshold, we want to keep it as a guess
@@ -211,6 +215,9 @@ void Graph::draw(int x, int y) {
 	
 	ofFill();
 	ofSetColor(ofMap(ofGetElapsedTimef() - lastTrigger, 0, .5, 255, 0, true));
+	if(noData) {
+		ofSetColor(128);
+	}
 	ofRect(0, 0, width, height);
 	
 	ofNoFill();
@@ -225,6 +232,9 @@ void Graph::draw(int x, int y) {
 	
 	ofRectangle region(1, height - 1, width - 2, -(height - 2));
 	ofSetHexColor(0xec008c);
+	if(noData) {
+		ofSetColor(200);
+	}
 	drawBuffer(derivativePolyline, threshold, derivativeBox, region);
 	ofSetColor(255);
 	drawBuffer(bufferPolyline, 0, bufferBox, region);
@@ -237,7 +247,7 @@ void Graph::draw(int x, int y) {
 		ofTranslate(width, 0);
 		drawString(ofToString(bufferBox.y, 2) + "<" + (buffer.empty() ? "empty" :  ofToString(buffer.back(), 2)) + "<" + ofToString(bufferBox.y + bufferBox.height, 2), 5, 10);
 		drawString(ofToString(derivativeBox.y, 2) + "<" + (derivative.empty() ? "empty" :  ofToString(derivative.back(), 2)) + "<" + ofToString(derivativeBox.y + derivativeBox.height, 2), 5, 18);
-		drawString(ofToString(threshold, 2) + ", " + ofToString(buffer.back(), 2) + " " + ofToString(derivative.back(), 2), 5, 26);
+		drawString(ofToString(threshold, 2) + ", " + ofToString(buffer.back(), 2) + " (" + ofToString(getNormalized(), 2) + ") " + ofToString(derivative.back(), 2), 5, 26);
 		ofPopMatrix();
 	}
 	

@@ -34,7 +34,7 @@ private:
 	string name;
 	
 	float threshold, thresholdSmoothing, percentile;
-	
+	bool noData;
 	float lastTrigger;
 	bool triggered;
 	float normalized, normalizedDerivative;
@@ -49,6 +49,7 @@ private:
 	ofMesh buildPolyline(const deque<float>& buffer);
 	float drawBuffer(ofMesh& line, float threshold, ofRectangle& from, ofRectangle& to);
 	void sendMidi() const;
+	void drawString(string text, int x, int y) const;
 	
 	int midiNote;
 	static float getMedian(const deque<float>& buffer, float percentile = .5);

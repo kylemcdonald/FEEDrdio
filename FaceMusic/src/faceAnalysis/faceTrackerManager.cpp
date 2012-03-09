@@ -68,10 +68,13 @@ void faceTrackerManager::update() {
 			
 			graphs[11].addSample(1);
 		} else {
-			graphs[10].addSample(0);
 			for(int i = 0; i < graphs.size(); i++) {
 				graphs[i].clear();
 			}
+			for(int i = 0; i < expressionGraphs.size(); i++) {
+				expressionGraphs[i].clear();
+			}
+			graphs[10].addSample(0);
 			graphs[11].addSample(0);
 		}
 	}
