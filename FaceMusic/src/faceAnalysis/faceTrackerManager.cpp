@@ -16,7 +16,7 @@ void faceTrackerManager::setup() {
 	tracker.setup();
 	enabled = true;
 	
-	graphs.resize(11);
+	graphs.resize(12);
 	graphs[0].setup("mouth width", 1, 1.65);
 	graphs[1].setup("mouth + jaw", 2, 1.08);
 	graphs[2].setup("eyebrows", 3, 1.22);
@@ -28,6 +28,9 @@ void faceTrackerManager::setup() {
 	graphs[8].setup("y position", 9, 8.40).setBidirectional(true);
 	graphs[9].setup("scale", 10, 0.10);
 	graphs[10].setup("activity", 11).setMinMaxRange(1, 2);
+	graphs[11].setup("presence", 12, 0).setMinMaxRange(0, 1);
+	
+	graphs[11].setSmoothing(.99, .5);
 	
 	keyPressed('l');
 }
@@ -62,11 +65,14 @@ void faceTrackerManager::update() {
 			for(int i = 0; i < classifier.size(); i++) {
 				expressionGraphs[i].addSample(classifier.getProbability(i));
 			}
+			
+			graphs[11].addSample(1);
 		} else {
 			graphs[10].addSample(0);
 			for(int i = 0; i < graphs.size(); i++) {
 				graphs[i].clear();
 			}
+			graphs[11].addSample(0);
 		}
 	}
 	
@@ -97,11 +103,6 @@ void faceTrackerManager::draw() {
 	ofPopMatrix();
 	ofPopStyle();
 	
-	if(tracker.getFound()) {
-		tracker.draw();
-	}
-	
-	ofDrawBitmapString(ofToString((int) ofGetFrameRate()), ofGetWidth() - 20, ofGetHeight() - 10);
 	/*
 	drawHighlightString(string() +
 											"tab - pause input\n" +
@@ -114,6 +115,15 @@ void faceTrackerManager::draw() {
 											"n - send selected note\n",
 											14, ofGetHeight() - 12 * 12);
 											*/
+	ofDrawBitmapString(ofToString((int) ofGetFrameRate()), ofGetWidth() - 20, ofGetHeight() - 10);
+	
+	if(tracker.getFound()) {
+		tracker.draw();
+	} else {
+		if(sin(ofGetElapsedTimef() * 12) > 0) {
+			ofDrawBitmapStringHighlight("no face", cam.getWidth() / 2 - 50, cam.getHeight() / 2);
+		}
+	}
 }
 
 void faceTrackerManager::keyPressed(int key) {

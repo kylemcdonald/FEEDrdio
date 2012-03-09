@@ -57,7 +57,9 @@ Graph::Graph()
 ,triggered(false)
 ,threshold(0)
 ,percentile(.98)
-,smoothing(.999)
+,downSmoothing(0)
+,upSmoothing(0)
+,thresholdSmoothing(.999)
 ,activity(0)
 ,activitySmoothing(.99)
 ,midiNote(0)
@@ -100,7 +102,20 @@ void Graph::setBidirectional(bool bidirectional) {
 	this->bidirectional = bidirectional;
 }
 
+void Graph::setSmoothing(float downSmoothing, float upSmoothing) {
+	this->downSmoothing = downSmoothing;
+	this->upSmoothing = upSmoothing;
+}
+
 void Graph::addSample(float sample) {
+	if(!buffer.empty() && (upSmoothing != 0 || downSmoothing != 0)) {
+		if(sample > buffer.back()) {
+			sample = ofLerp(sample, buffer.back(), upSmoothing);
+		} else {
+			sample = ofLerp(sample, buffer.back(), downSmoothing);
+		}
+	}
+	
 	if(minRange != 0 || maxRange != 0) {
 		sample = ofClamp(sample, minRange, maxRange);
 	}
@@ -122,7 +137,7 @@ void Graph::addSample(float sample) {
 	if(threshold == 0 || threshold != threshold) {
 		threshold = curThreshold;
 	} else {
-		threshold = ofLerp(curThreshold, threshold, smoothing);
+		threshold = ofLerp(curThreshold, threshold, thresholdSmoothing);
 	}
 	
 	bufferPolyline = buildPolyline(buffer);
@@ -216,9 +231,14 @@ void Graph::draw(int x, int y) {
 	
 	ofSetColor(255);
 	drawString(name, 5, 10);
-	drawString(ofToString(bufferBox.y, 2) + "<" + (buffer.empty() ? "empty" :  ofToString(buffer.back(), 2)) + "<" + ofToString(bufferBox.y + bufferBox.height, 2), 5, 18);
-	if(threshold != 0) {
-		drawString(ofToString(threshold, 4), 5, 26);
+	
+	if(!buffer.empty() && !derivative.empty()) {
+		ofPushMatrix();
+		ofTranslate(width, 0);
+		drawString(ofToString(bufferBox.y, 2) + "<" + (buffer.empty() ? "empty" :  ofToString(buffer.back(), 2)) + "<" + ofToString(bufferBox.y + bufferBox.height, 2), 5, 10);
+		drawString(ofToString(derivativeBox.y, 2) + "<" + (derivative.empty() ? "empty" :  ofToString(derivative.back(), 2)) + "<" + ofToString(derivativeBox.y + derivativeBox.height, 2), 5, 18);
+		drawString(ofToString(threshold, 2) + ", " + ofToString(buffer.back(), 2) + " " + ofToString(derivative.back(), 2), 5, 26);
+		ofPopMatrix();
 	}
 	
 	ofPopStyle();

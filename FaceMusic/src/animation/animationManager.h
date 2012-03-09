@@ -1,11 +1,3 @@
-//
-//  faceTrackerManager.cpp
-//  FaceMusic
-//
-//  Created by molmol on 3/8/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
-//
-
 #pragma once
 
 #include <iostream>
@@ -18,10 +10,10 @@
 
 
 class animationManager {
-    
-    public:   
-    
-    void setup();
+	
+public:   
+	
+	void setup();
 	void update();
 	void draw();
 	void keyPressed(int key);
@@ -50,6 +42,5 @@ class animationManager {
     int chin, forehead, lear, rear, reye, leye, nose, mouth;
     vector < ofPoint >  offsets;
     ofPolyline temp;
-    
     
 };
