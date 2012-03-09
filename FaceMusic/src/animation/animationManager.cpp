@@ -148,10 +148,27 @@ void animationManager::setup() {
     nose = FA->getId("nose");
     mouth = FA->getId("mouth");
     
+    
+    faceLock = 0;
+    faceLockTarget = 0;
+    
 }
 
 void animationManager::update() {
 	
+
+//    if (FTM->FT.getFound()){
+//        faceLockTarget = 1;
+//    } else {
+//        faceLockTarget = 0;
+//    }
+//    
+//    if (faceLock < faceLockTarget){
+//        faceLock = 0.99f * faceLock + 0.01 * faceLockTarget;
+//    } else {
+//        faceLock = 0.999f * faceLock + 0.001 * faceLockTarget;
+//    }
+    
     
     if (ofGetMouseX() > 640){
         

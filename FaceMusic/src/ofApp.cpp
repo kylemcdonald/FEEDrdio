@@ -5,10 +5,12 @@ void ofApp::setup() {
 	//ofSetFrameRate(60);
 	
 	ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL_BILLBOARD);
-	FTM.setup();
-	ofSetWindowShape(FTM.camWidth * 2, FTM.camHeight);
-	AM.FA = &FTM.FA;
-	AM.setup();
+    FTM.setup();
+    ofSetWindowShape(FTM.camWidth * 2, FTM.camHeight);
+    AM.FA = &FTM.FA;
+    AM.FTM = &FTM;
+    AM.setup();
+
 }
 
 void ofApp::update() {
