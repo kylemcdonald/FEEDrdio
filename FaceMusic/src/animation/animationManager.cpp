@@ -145,6 +145,7 @@ void animationManager::setup() {
 
 
 void transform ( ofxBox2dConvexPoly & circle, faceFeatureAnalysis & ffa, ofPoint offset, float angleAdder = 0, float extraScale = 1.0){
+    
     float pct = 0.5f;
     ofPoint circlePos = circle.getPosition()/OFX_BOX2D_SCALE;
     ofPoint targetPos = ofPoint((ffa.pos.x + offset.x)/OFX_BOX2D_SCALE, (ffa.pos.y + offset.y)/OFX_BOX2D_SCALE);
@@ -165,20 +166,20 @@ void transform ( ofxBox2dConvexPoly & circle, faceFeatureAnalysis & ffa, ofPoint
     
 }
 
-
-void transform2 ( ofxBox2dConvexPoly & circle, faceFeatureAnalysis & ffa, ofPoint offset, float angleAdder = 0, float extraScale = 1.0){
-    
-    float angle = circle.getRotation() * DEG_TO_RAD;
-    float targetAngle = ffa.angle + angleAdder;
-    float diffAngle = targetAngle - angle;
-    while (diffAngle < -PI) diffAngle += TWO_PI;
-    while (diffAngle > PI) diffAngle -= TWO_PI;
-    diffAngle *= 0.36;
-    circle.addAttractionPoint(ffa.pos.x, ffa.pos.y, 6);
-    circle.body->ApplyAngularImpulse(diffAngle);
-    circle.setScale(1.55 * (ffa.dist/2 / 200.0) * extraScale);
-    
-}
+//
+//void transform2 ( ofxBox2dConvexPoly & circle, faceFeatureAnalysis & ffa, ofPoint offset, float angleAdder = 0, float extraScale = 1.0){
+//    
+//    float angle = circle.getRotation() * DEG_TO_RAD;
+//    float targetAngle = ffa.angle + angleAdder;
+//    float diffAngle = targetAngle - angle;
+//    while (diffAngle < -PI) diffAngle += TWO_PI;
+//    while (diffAngle > PI) diffAngle -= TWO_PI;
+//    diffAngle *= 0.36;
+//    circle.addAttractionPoint(ffa.pos.x, ffa.pos.y, 6);
+//    circle.body->ApplyAngularImpulse(diffAngle);
+//    circle.setScale(1.55 * (ffa.dist/2 / 200.0) * extraScale);
+//    
+//}
 
 
 void animationManager::update() {

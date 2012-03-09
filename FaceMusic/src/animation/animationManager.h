@@ -9,6 +9,7 @@
 #include "faceTrackerManager.h"
 
 
+
 class animationManager {
 	
 public:   
@@ -52,6 +53,8 @@ public:
     float fistNonPresenceTime;
     
     ofImage pebbles[16];
+    
+    
     
     
     
