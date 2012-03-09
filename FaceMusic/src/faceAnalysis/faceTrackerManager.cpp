@@ -97,11 +97,6 @@ void faceTrackerManager::draw() {
 	ofPopMatrix();
 	ofPopStyle();
 	
-	if(tracker.getFound()) {
-		tracker.draw();
-	}
-	
-	ofDrawBitmapString(ofToString((int) ofGetFrameRate()), ofGetWidth() - 20, ofGetHeight() - 10);
 	/*
 	drawHighlightString(string() +
 											"tab - pause input\n" +
@@ -114,6 +109,15 @@ void faceTrackerManager::draw() {
 											"n - send selected note\n",
 											14, ofGetHeight() - 12 * 12);
 											*/
+	ofDrawBitmapString(ofToString((int) ofGetFrameRate()), ofGetWidth() - 20, ofGetHeight() - 10);
+	
+	if(tracker.getFound()) {
+		tracker.draw();
+	} else {
+		if(sin(ofGetElapsedTimef() * 12) > 0) {
+			ofDrawBitmapStringHighlight("no face", cam.getWidth() / 2 - 50, cam.getHeight() / 2);
+		}
+	}
 }
 
 void faceTrackerManager::keyPressed(int key) {
