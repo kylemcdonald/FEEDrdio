@@ -5,8 +5,8 @@
 
 <!-- mbp imac have 640x480, mac air is 640x480 -->
 <camera>
-  <width>320</width>
-  <height>240</height>
+  <width>640</width>
+  <height>480</height>
 </camera>
 
 <!-- screen is on the left -->
@@ -17,6 +17,6 @@
 
 <!-- projector is on the right -->
 <projector>
-  <width>1280</width>
-  <height>720</height>
+  <width>640</width>
+  <height>480</height>
 </projector>

@@ -111,8 +111,6 @@ void faceAnalyzer::calculate(ofxFaceTracker & tracker){
     lEar.pos = midPoint(leftEar);
     rEar.pos = midPoint(rightEar);
     
-    
-    
     calculateSizeAngle(leyePolyline, lEye, true);
     calculateSizeAngle(reyePolyline, rEye, true);
     calculateSizeAngle(nosePolyline, nose, false);
@@ -125,8 +123,6 @@ void faceAnalyzer::calculate(ofxFaceTracker & tracker){
     
     
 }
-
-
 
 void faceAnalyzer::drawFeature(faceFeatureAnalysis & ft){
     
