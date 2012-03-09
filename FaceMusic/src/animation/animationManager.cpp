@@ -5,13 +5,24 @@ using namespace cv;
 
 
 void animationManager::loadImageSet(vector < ofImage * > & imgs, string partName, ofPolyline & maskShape){
+    
+    
     ofImage mask;
-    mask.loadImage("masks/" + partName + ".png");
+    
+    if (side == 0)
+        mask.loadImage("masks/" + partName + ".png");
+    else 
+        mask.loadImage("masks_b/" + partName + ".png");
+    
     ofImage gray;
     gray.setUseTexture(false);
     gray.allocate(400,400, OF_IMAGE_GRAYSCALE);
     ofDirectory dir;
-    dir.listDir("output/" + partName);
+    if (side == 0)
+        dir.listDir("output/" + partName);
+    else 
+        dir.listDir("output_b/" + partName);
+    
     for (int i = 0; i < dir.size(); i++){
         ofImage * img = new ofImage();
         img->loadImage(dir.getPath(i));
@@ -43,6 +54,9 @@ void animationManager::loadImageSet(vector < ofImage * > & imgs, string partName
 
 
 void animationManager::setup() {
+    
+    //pebbleShader.load("", "pebble.shader");
+    
 	ofxXmlSettings xml;
 	xml.loadFile("settings.xml");
 	side = xml.getValue("side", 0);
@@ -159,6 +173,8 @@ void animationManager::setup() {
 		circles.push_back(circle);
     }
     
+    
+    //pebbleBg.loadImage("pebble_bg/b.jpeg");
     
     
 }
@@ -499,6 +515,9 @@ void animationManager::draw() {
 
     
     
+    
+    //pebbleBg.getTextureReference().bind();
+    
     ofSetColor(120,120,120,150);
     ofSetRectMode(OF_RECTMODE_CENTER);
     for (int i = 0; i < circles.size(); i++){
@@ -512,6 +531,11 @@ void animationManager::draw() {
         
     }
     ofSetRectMode(OF_RECTMODE_CORNER);
+    
+    
+    //pebbleBg.getTextureReference().unbind();
+    
+    
     
 
     ofSetColor(255,255,255,255);
