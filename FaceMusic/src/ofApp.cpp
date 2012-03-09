@@ -1,8 +1,8 @@
 #include "ofApp.h"
 
 void ofApp::setup() {	
-	ofSetVerticalSync(true);
-	ofSetFrameRate(60);
+	//ofSetVerticalSync(true);
+	//ofSetFrameRate(60);
 	
 	ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL_BILLBOARD);
 	FTM.setup();

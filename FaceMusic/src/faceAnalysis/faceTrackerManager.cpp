@@ -22,13 +22,12 @@ void faceTrackerManager::setup() {
 	graphs[2].setup("eyebrows", 3, 1.22);
 	graphs[3].setup("eye openness", 4, 0.48);
 	graphs[4].setup("x rotation", 5, 0.04);
-	graphs[5].setup("y rotation", 6, 0.04);
-	graphs[6].setup("z rotation", 7, 0.03);
-	graphs[7].setup("x position", 8, 8.40);
-	graphs[8].setup("y position", 9, 8.40);
+	graphs[5].setup("y rotation", 6, 0.04).setBidirectional(true);
+	graphs[6].setup("z rotation", 7, 0.03).setBidirectional(true);
+	graphs[7].setup("x position", 8, 8.40).setBidirectional(true);
+	graphs[8].setup("y position", 9, 8.40).setBidirectional(true);
 	graphs[9].setup("scale", 10, 0.10);
-	graphs[10].setup("activity", 11);
-	graphs[10].setMinMaxRange(0, 2);
+	graphs[10].setup("activity", 11).setMinMaxRange(1, 2);
 	
 	keyPressed('l');
 }
@@ -103,8 +102,8 @@ void faceTrackerManager::draw() {
 	}
 	
 	ofDrawBitmapString(ofToString((int) ofGetFrameRate()), ofGetWidth() - 20, ofGetHeight() - 10);
-	drawHighlightString(
-											string() +
+	/*
+	drawHighlightString(string() +
 											"tab - pause input\n" +
 											"r - reset expressions\n" +
 											"e - add expression\n" +
@@ -114,6 +113,7 @@ void faceTrackerManager::draw() {
 											"c - send selected control change\n" +
 											"n - send selected note\n",
 											14, ofGetHeight() - 12 * 12);
+											*/
 }
 
 void faceTrackerManager::keyPressed(int key) {
@@ -138,6 +138,7 @@ void faceTrackerManager::keyPressed(int key) {
 		classifier.save("expressions");
 	}
 	if(key == 'l') {
+		classifier.setSigma(100);
 		classifier.load("expressions");
 		for(int i = 0; i < classifier.size(); i++) {
 			Graph graph;

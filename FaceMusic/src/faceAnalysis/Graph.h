@@ -7,11 +7,12 @@ class Graph {
 public:
 	Graph();
 	
-	void setup(string name, int midiNote = 0, float threshold = 0);
+	Graph& setup(string name, int midiNote = 0, float threshold = 0);
 	
 	void setName(string name);
 	void setMidiNote(int midiNote);
 	void setThreshold(float threshold);
+	void setBidirectional(bool bidirectional);
 	void setSize(int width, int height);
 	void setMinMaxRange(float minRange, float maxRange);
 	
@@ -44,7 +45,7 @@ private:
 	
 	ofRectangle getBoundingBox(const deque<float>& buffer);
 	ofMesh buildPolyline(const deque<float>& buffer);
-	float drawBuffer(ofMesh& line, ofRectangle& box, float threshold, int x, int y, int width, int height);
+	float drawBuffer(ofMesh& line, float threshold, ofRectangle& from, ofRectangle& to);
 	void sendMidi() const;
 	
 	int midiNote;
@@ -53,6 +54,6 @@ private:
 	ofVec2f drawPosition, mousePosition;
 	bool hoverState;
 	
+	bool bidirectional;
 	float minRange, maxRange;
-	float curMin, curMax;
 };
