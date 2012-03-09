@@ -6,11 +6,8 @@ using namespace cv;
 
 void animationManager::loadImageSet(vector < ofImage * > & imgs, string partName, ofPolyline & maskShape){
     
-    
-    
     ofImage mask;
     mask.loadImage("masks/" + partName + ".png");
-    
     ofImage gray;
     gray.setUseTexture(false);
     gray.allocate(400,400, OF_IMAGE_GRAYSCALE);
@@ -55,9 +52,9 @@ void animationManager::loadImageSet(vector < ofImage * > & imgs, string partName
     
 }
 
-void transform ( ofxBox2dConvexPoly & circle, faceFeatureAnalysis & ffa, ofPoint offset, float angleAdder = 0){
+void transform ( ofxBox2dConvexPoly & circle, faceFeatureAnalysis & ffa, ofPoint offset, float angleAdder = 0, float extraScale = 1.0){
     
-    float pct = ofMap(ofGetMouseX(), 640,640*2, 1,0);
+    float pct = 0.5f;
     
     ofPoint circlePos = circle.getPosition()/OFX_BOX2D_SCALE;
     ofPoint targetPos = ofPoint((ffa.pos.x + offset.x)/OFX_BOX2D_SCALE, (ffa.pos.y + offset.y)/OFX_BOX2D_SCALE);
@@ -76,10 +73,41 @@ void transform ( ofxBox2dConvexPoly & circle, faceFeatureAnalysis & ffa, ofPoint
     
     
     circle.body->SetTransform(b2Vec2(mixPos.x, mixPos.y), angle );
-    circle.setScale(1.55 * (ffa.dist/2 / 200.0));
-    circle.body->SetLinearVelocity(b2Vec2(0,0));
-    circle.body->SetAngularVelocity(0);
+    circle.setScale(1.55 * (ffa.dist/2 / 200.0) * extraScale);
+    //circle.body->SetLinearDamping(0.9);
+    //circle.body->SetAngularDamping(0.9);
+    //circle.body->SetLinearVelocity(b2Vec2(circle.body->GetLinearVelocity().x*(1-pct),circle.body->GetLinearVelocity().y*(1-pct)));
+    //circle.body->SetAngularVelocity(circle.body->GetAngularVelocity() * (1-pct));
 }
+
+
+void transform2 ( ofxBox2dConvexPoly & circle, faceFeatureAnalysis & ffa, ofPoint offset, float angleAdder = 0, float extraScale = 1.0){
+
+    float angle = circle.getRotation() * DEG_TO_RAD;
+    
+    float targetAngle = ffa.angle + angleAdder;
+    
+    float diffAngle = targetAngle - angle;
+    while (diffAngle < -PI) diffAngle += TWO_PI;
+    while (diffAngle > PI) diffAngle -= TWO_PI;
+    diffAngle *= 0.36;
+//    angle += diffAngle;
+//    while (angle > PI) angle-= TWO_PI;
+//    while (angle < -PI) angle+= TWO_PI;
+
+    //cout << circle.getDamping() << endl;
+    //circle.setDamping(0.97);
+    
+    
+    //circle.body->SetLinearDamping(0.95f);
+    //circle.body->SetAngularDamping(0.3f);
+    
+    circle.addAttractionPoint(ffa.pos.x, ffa.pos.y, 6);
+    circle.body->ApplyAngularImpulse(diffAngle);
+    circle.setScale(1.55 * (ffa.dist/2 / 200.0) * extraScale);
+
+}
+
 
 void animationManager::setup() {
     
@@ -148,7 +176,7 @@ void animationManager::setup() {
     nose = FA->getId("nose");
     mouth = FA->getId("mouth");
     
-    
+    presence = 0;
     faceLock = 0;
     faceLockTarget = 0;
     
@@ -156,50 +184,52 @@ void animationManager::setup() {
 
 void animationManager::update() {
 	
-
-//    if (FTM->FT.getFound()){
-//        faceLockTarget = 1;
-//    } else {
-//        faceLockTarget = 0;
-//    }
-//    
-//    if (faceLock < faceLockTarget){
-//        faceLock = 0.99f * faceLock + 0.01 * faceLockTarget;
-//    } else {
-//        faceLock = 0.999f * faceLock + 0.001 * faceLockTarget;
-//    }
+    if (FTM->tracker.getFound()){
+        presence = 0.6f * presence + 0.4f * 1.0;
+    } else {
+        presence = 0.6f * presence + 0.6f * 0.0;
+    }
     
     
-    if (ofGetMouseX() > 640){
+    if (presence > 0.5){
         
-        
-        for (int i = 0; i < FA->nFeatures; i++){
+        if (ofGetElapsedTimef() - lastNonPresenceTime < 1.1){
+            float pct = (ofGetElapsedTimef() - lastNonPresenceTime)/1.1;
             
-            ofPoint offsetme;
-            
-            switch (i){
-                case 2:
-                case 6:
-                case 7:
-                    transform(polys[i], *FA->features[i], ofPoint(0,0), PI);
-                    break;
-                case 5:
-                    offsetme.x = 0.4 * 100 * cos(FA->features[i]->angle + PI/4);
-                    offsetme.y = 0.4 * 100 * sin(FA->features[i]->angle + PI/4);
-                    transform(polys[i], *FA->features[i], offsetme, PI/4);
-                    break;
-                case 4:
-                    offsetme.x = 0.4 * -100 * cos(FA->features[i]->angle);
-                    offsetme.y = 0.4 * -100 * sin(FA->features[i]->angle);
-                    transform(polys[i], *FA->features[i], offsetme);
-                    break;
-                default:
-                    transform(polys[i], *FA->features[i], ofPoint(0,0));
-                    break;
-                    
+            for (int i = 0; i < FA->nFeatures; i++){
+                if (ofRandom(1) > (pct)){
+                    which[i] = ofRandom(0,10000000);
+                }
             }
-            
         }
+        
+            for (int i = 0; i < FA->nFeatures; i++){
+                ofPoint offsetme;
+                switch (i){
+                    case 0:
+                        transform(polys[i], *FA->features[i], ofPoint(0,0), 0);
+                        break;
+                    case 2:
+                    case 6:
+                    case 7:
+                        transform(polys[i], *FA->features[i], ofPoint(0,0), PI);
+                        break;
+                    case 5:
+                        offsetme.x = 0.4 * 100 * cos(FA->features[i]->angle + PI/4);
+                        offsetme.y = 0.4 * 100 * sin(FA->features[i]->angle + PI/4);
+                        transform(polys[i], *FA->features[i], offsetme, PI/4);
+                        break;
+                    case 4:
+                        offsetme.x = 0.4 * -100 * cos(FA->features[i]->angle);
+                        offsetme.y = 0.4 * -100 * sin(FA->features[i]->angle);
+                        transform(polys[i], *FA->features[i], offsetme);
+                        break;
+                    default:
+                        transform(polys[i], *FA->features[i], ofPoint(0,0));
+                        break;
+                }
+            }
+       // }
         
         
         
@@ -211,12 +241,10 @@ void animationManager::update() {
         
     } else {
         
+        lastNonPresenceTime = ofGetElapsedTimef();
         for (int i = 0; i < FA->nFeatures; i++){
             polys[i].body->SetAwake(true);
-            ofPoint pt = (ofPoint(ofGetMouseX(), ofGetMouseY()) - polys[i].getPosition());
-            pt.normalize();
-            pt *= 100;
-            polys[i].addAttractionPoint(ofPoint(ofGetMouseX(), ofGetMouseY()), 3);
+            polys[i].addAttractionPoint(ofPoint(200,200), 3);
         }
     }
     
@@ -225,12 +253,7 @@ void animationManager::update() {
     
 	ofBackground(0,0,0); //Grey background, NY style
     
-    if (ofGetMousePressed() ){
-        for (int i = 0; i < FA->nFeatures; i++)
-            which[i] = ofRandom(0,10000000);
-        
-        
-    }
+    
     
     
 
@@ -310,15 +333,6 @@ void animationManager::draw() {
     drawImageWithInfo(faceImages[mouth][which[mouth] % faceImages[mouth].size()], FA->mouth,  polys[mouth], offsets[mouth], 1.6, true);
     drawImageWithInfo(faceImages[nose][which[nose] % faceImages[nose].size()], FA->nose,  polys[nose], offsets[nose], 2.0, true, 180);
 
-
-    /*
-    if (polys.size() > 0){
-    float s = ofMap(ofGetMouseX(), 0, ofGetHeight(), 0.5, 1.5);
-    polys[0].setScale(s);
-    polys[0].body->SetTransform(b2Vec2(ofGetMouseX() / OFX_BOX2D_SCALE, ofGetMouseY() / OFX_BOX2D_SCALE), ofGetElapsedTimef());
-    polys[0].body->SetLinearVelocity(b2Vec2(0,0));
-    }
-    */
 
     for(int i=0; i<polys.size(); i++) {
     ofFill();
