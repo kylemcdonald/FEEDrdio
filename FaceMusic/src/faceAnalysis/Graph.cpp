@@ -53,21 +53,31 @@ void Graph::drawString(string text, int x, int y) const {
 }
 
 Graph::Graph()
-:lastTrigger(0)
-,triggered(false)
+:width(0)
+,height(0)
+
 ,threshold(0)
+,thresholdSmoothing(.999)
 ,percentile(.98)
+
+,noData(true) 
+,lastTrigger(0)
+,triggered(false)
+
+,normalized(0)
+,normalizedDerivative(0)
+
+,activitySmoothing(.99)
+,activity(0)
+
 ,downSmoothing(0)
 ,upSmoothing(0)
-,thresholdSmoothing(.999)
-,activity(0)
-,activitySmoothing(.99)
+
 ,midiNote(0)
 ,hoverState(false)
-,minRange(0)
-,maxRange(0)
 ,bidirectional(false)
-,noData(true) {
+,minRange(0)
+,maxRange(0) {
 	setupResources();
 	setSize(128, 32);
 }
@@ -158,7 +168,7 @@ void Graph::addSample(float sample) {
 	if(bufferBox.height > 0) {
 		normalized = ofMap(buffer.back(), bufferBox.y, bufferBox.y + bufferBox.height, 0, 1);
 	}
-	if(derivativeBox.height > 0) {
+	if(derivative.size() > 0 && derivativeBox.height > 0) {
 		normalizedDerivative = ofMap(derivative.back(), derivativeBox.y, derivativeBox.y + derivativeBox.height, 0, 1);
 	}
 	
