@@ -43,4 +43,11 @@ public:
     vector < ofPoint >  offsets;
     ofPolyline temp;
     
+    float presence;
+    float lastNonPresenceTime;
+    
+    
+    
+    
+    
 };
