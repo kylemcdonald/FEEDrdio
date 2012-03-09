@@ -15,6 +15,7 @@ public:
 	void setBidirectional(bool bidirectional);
 	void setSize(int width, int height);
 	void setMinMaxRange(float minRange, float maxRange);
+	void setSmoothing(float downSmoothing, float upSmoothing);
 	
 	void addSample(float sample);
 	
@@ -32,13 +33,14 @@ private:
 	int width, height;
 	string name;
 	
-	float threshold, smoothing, percentile;
+	float threshold, thresholdSmoothing, percentile;
 	
 	float lastTrigger;
 	bool triggered;
 	float normalized, normalizedDerivative;
 	float activitySmoothing, activity;
 	
+	float downSmoothing, upSmoothing;
 	fixed_deque<float> buffer, derivative;
 	ofMesh bufferPolyline, derivativePolyline;
 	ofRectangle bufferBox, derivativeBox;
