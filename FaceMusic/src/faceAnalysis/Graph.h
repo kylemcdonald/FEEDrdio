@@ -29,7 +29,7 @@ public:
 	void keyPressed(int key);
 	void mouseMoved(int x, int y);
 	
-private:
+//private:
 	int width, height;
 	string name;
 	

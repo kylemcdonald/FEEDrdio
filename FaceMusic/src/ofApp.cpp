@@ -23,7 +23,6 @@ void ofApp::draw() {
 	ofTranslate(FTM.cam.getWidth(), 0);
 	AM.draw();
 	ofPopMatrix();
-	
 	FTM.draw();
 }
 
