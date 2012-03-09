@@ -1,9 +1,9 @@
 <!-- left is 0, right is 1 -->
 <side>0</side>
 
-<fullscreen>1</fullscreen>
+<fullscreen>0</fullscreen>
 
-<!-- mbp imac have 1280x720, mac air is 640x480 -->
+<!-- mbp imac have 640x480, mac air is 640x480 -->
 <camera>
   <width>640</width>
   <height>480</height>

@@ -11,12 +11,13 @@ class faceTrackerManager {
 public: 
 	void setup();
 	void update();
-	void draw(int width, int height);
+	void draw();
 	void keyPressed(int key);
 	void mouseMoved(int x, int y);
 	
 	vector<Graph> graphs, expressionGraphs;
 	
+	int width, height;
 	int camWidth, camHeight;
 	bool enabled;
 	ofVideoGrabber cam;

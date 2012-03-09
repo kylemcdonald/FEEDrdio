@@ -16,13 +16,17 @@ public:
 	
 	void setup();
 	void update();
-	void draw(int width, int height);
+	void draw();
 	void keyPressed(int key);
 	void mouseDragged(int x, int y, int button);
     void mousePressed(int x, int y, int button);
     void mouseReleased(int x, int y, int button);
     void loadImageSet(vector < ofImage * > & imgs, string partName, ofPolyline & maskShape);
     
+		ofVec2f getAttractor();
+		
+		int width, height;
+		int side;
     
     faceTrackerManager  * FTM;
     faceAnalyzer * FA;

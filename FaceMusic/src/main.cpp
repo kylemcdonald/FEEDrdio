@@ -3,14 +3,22 @@
 #include "ofxXmlSettings.h"
 
 int main() {
-	// ofRunApp() deletes the app
-	ofApp& app = *(new ofApp());
+	ofxXmlSettings xml;
+	xml.loadFile("settings.xml");
+	bool fullscreen = xml.getValue("fullscreen", false);
+	xml.pushTag("projector");
+	int projectorWidth = xml.getValue("width", 640);
+	int projectorHeight = xml.getValue("height", 480);
+	xml.popTag();
+	xml.pushTag("screen");
+	int screenWidth = xml.getValue("width", 640);
+	int screenHeight = xml.getValue("height", 480);
+	xml.popTag();
 	
-	app.loadSettings();
-	int windowWidth = app.screenWidth + app.projectorWidth;
-	int windowHeight = MAX(app.screenHeight, app.projectorHeight);
+	int windowWidth = screenWidth + projectorWidth;
+	int windowHeight = MAX(screenHeight, projectorHeight);
 	
 	ofAppGlutWindow window;
-	ofSetupOpenGL(&window, windowWidth, windowHeight, app.fullscreen ? OF_FULLSCREEN : OF_WINDOW);
-	ofRunApp(&app);
+	ofSetupOpenGL(&window, windowWidth, windowHeight, fullscreen ? OF_FULLSCREEN : OF_WINDOW);
+	ofRunApp(new ofApp());
 }

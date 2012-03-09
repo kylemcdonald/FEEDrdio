@@ -10,6 +10,11 @@ void faceTrackerManager::setup() {
 	camWidth = xml.getValue("width", 640);
 	camHeight = xml.getValue("height", 480);
 	xml.popTag();
+	xml.pushTag("screen");
+	width = xml.getValue("width", 640);
+	height = xml.getValue("height", 480);
+	xml.popTag();
+	
 	cam.initGrabber(camWidth, camHeight);
 	
 	tracker.setRescale(.5);
@@ -85,7 +90,7 @@ void faceTrackerManager::update() {
 	}
 }
 
-void faceTrackerManager::draw(int width, int height) {
+void faceTrackerManager::draw() {
 	ofSetColor(enabled ? 255 : cyanPrint);
 	cam.draw(0, 0, width, height);
 	ofSetColor(255);

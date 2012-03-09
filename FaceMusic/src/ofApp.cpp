@@ -8,7 +8,6 @@ void ofApp::setup() {
 	
 	ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL_BILLBOARD);
     FTM.setup();
-    ofSetWindowShape(FTM.camWidth * 2, FTM.camHeight);
     AM.FA = &FTM.FA;
     AM.FTM = &FTM;
     AM.setup();
@@ -22,29 +21,11 @@ void ofApp::update() {
 
 void ofApp::draw() {	
 	// draw debug screen
-	FTM.draw(screenWidth, screenHeight);
+	FTM.draw();
 	
 	// draw projection
-	ofTranslate(screenWidth, 0);
-	AM.draw(projectorWidth, projectorHeight);
-}
-
-void ofApp::loadSettings() {
-	ofxXmlSettings xml;
-	xml.loadFile("settings.xml");
-	fullscreen = xml.getValue("fullscreen", false);
-	
-	side = xml.getValue("side", 0);
-	
-	xml.pushTag("projector");
-	projectorWidth = xml.getValue("width", 640);
-	projectorHeight = xml.getValue("height", 480);
-	xml.popTag();
-	
-	xml.pushTag("screen");
-	screenWidth = xml.getValue("width", 640);
-	screenHeight = xml.getValue("height", 480);
-	xml.popTag();
+	ofTranslate(FTM.width, 0);
+	AM.draw();
 }
 
 void ofApp::keyPressed(int key) {
