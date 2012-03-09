@@ -11,6 +11,7 @@ void ofApp::setup() {
     FTM.setup();
     ofSetWindowShape(FTM.camWidth * 2, FTM.camHeight);
     AM.FA = &FTM.FA;
+    AM.FTM = &FTM;
     AM.setup();
 
 }
@@ -23,15 +24,10 @@ void ofApp::update() {
 
 void ofApp::draw() {
 	
-    
-        
-        
-    
     ofPushMatrix();
     ofTranslate(FTM.cam.getWidth(), 0);
     AM.draw();
     ofPopMatrix();
-    
     FTM.draw();
 }
 
