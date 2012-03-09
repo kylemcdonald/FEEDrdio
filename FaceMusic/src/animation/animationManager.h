@@ -9,6 +9,7 @@
 #include "faceTrackerManager.h"
 
 
+
 class animationManager {
 	
 public:   
@@ -37,6 +38,9 @@ public:
     //------------------------------------------------ box 2d
     ofxBox2d box2d;
     vector <ofxBox2dConvexPoly >		polys;
+    vector <ofxBox2dCircle >            circles;
+
+    
     
     //------------------------------------------------ box 2d
     int chin, forehead, lear, rear, reye, leye, nose, mouth;
@@ -45,6 +49,10 @@ public:
     
     float presence;
     float lastNonPresenceTime;
+    bool bWasPresentLastFrame; 
+    float fistNonPresenceTime;
+    
+    ofImage pebbles[16];
     
     
     
