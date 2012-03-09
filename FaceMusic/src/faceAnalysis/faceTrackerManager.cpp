@@ -30,7 +30,8 @@ void faceTrackerManager::setup() {
 	graphs[10].setup("activity", 11).setMinMaxRange(1, 2);
 	graphs[11].setup("presence", 12, 0).setMinMaxRange(0, 1);
 	
-	graphs[11].setSmoothing(.99, .5);
+	graphs[10].setSmoothing(.95, .95); // smooth activity
+	graphs[11].setSmoothing(.99, .5); // smooth presence
 	
 	keyPressed('l');
 }
