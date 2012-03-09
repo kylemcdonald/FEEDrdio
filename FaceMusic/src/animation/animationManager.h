@@ -16,7 +16,7 @@ public:
 	
 	void setup();
 	void update();
-	void draw();
+	void draw(int width, int height);
 	void keyPressed(int key);
 	void mouseDragged(int x, int y, int button);
     void mousePressed(int x, int y, int button);

@@ -85,47 +85,43 @@ void faceTrackerManager::update() {
 	}
 }
 
-void faceTrackerManager::draw() {
+void faceTrackerManager::draw(int width, int height) {
 	ofSetColor(enabled ? 255 : cyanPrint);
-	cam.draw(0, 0);
+	cam.draw(0, 0, width, height);
 	ofSetColor(255);
-	ofDrawBitmapString(ofToString((int) ofGetFrameRate()), 10, 20);
+	ofDrawBitmapString(ofToString((int) ofGetFrameRate()), width - 40, 20);
 	
 	ofPushMatrix();
 	ofTranslate(5, 5);
 	for(int i = 0; i < graphs.size(); i++) {
 		graphs[i].draw(0, i * 34);
 	}
-	ofPopMatrix();
-	
-	ofPushStyle();
-	ofPushMatrix();
-	ofTranslate(128 + 10, 5);
 	for(int i = 0; i < expressionGraphs.size(); i++) {
-		expressionGraphs[i].draw(0, i * 34);
+		expressionGraphs[i].draw(0, (graphs.size() + i) * 34);
 	}
 	ofPopMatrix();
-	ofPopStyle();
 	
-	/*
-	drawHighlightString(string() +
-											"tab - pause input\n" +
-											"r - reset expressions\n" +
-											"e - add expression\n" +
-											"s - add sample\n" +
-											"s - save expressions\n" +
-											"l - load expressions\n" +
-											"c - send selected control change\n" +
-											"n - send selected note\n",
-											14, ofGetHeight() - 12 * 12);
-											*/
-	ofDrawBitmapString(ofToString((int) ofGetFrameRate()), ofGetWidth() - 20, ofGetHeight() - 10);
+	if(ofGetElapsedTimef() < 10) {
+		drawHighlightString(string() +
+												"tab - pause input\n" +
+												"r - reset expressions\n" +
+												"e - add expression\n" +
+												"s - add sample\n" +
+												"s - save expressions\n" +
+												"l - load expressions\n" +
+												"c - send selected control change\n" +
+												"n - send selected note\n",
+												14, height - 12 * 12);
+	}
 	
 	if(tracker.getFound()) {
+		ofPushMatrix();
+		ofScale(width / cam.getWidth(), height / cam.getHeight());
 		tracker.draw();
+		ofPopMatrix();
 	} else {
 		if(sin(ofGetElapsedTimef() * 12) > 0) {
-			ofDrawBitmapStringHighlight("no face", cam.getWidth() / 2 - 50, cam.getHeight() / 2);
+			ofDrawBitmapStringHighlight("no face", width / 2 - 50, height / 2);
 		}
 	}
 }

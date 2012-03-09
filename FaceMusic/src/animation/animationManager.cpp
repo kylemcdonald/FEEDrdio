@@ -349,7 +349,7 @@ void animationManager::drawImageWithInfo(ofImage * temp, faceFeatureAnalysis & f
 
 
 
-void animationManager::draw() {
+void animationManager::draw(int width, int height) {
     
         
     ofSetColor(255,255,255,100);

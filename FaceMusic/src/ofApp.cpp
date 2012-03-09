@@ -20,13 +20,13 @@ void ofApp::update() {
 	AM.update();
 }
 
-void ofApp::draw() {
-	ofPushMatrix();
-	ofTranslate(FTM.cam.getWidth(), 0);
-	AM.draw();
-	ofPopMatrix();
+void ofApp::draw() {	
+	// draw debug screen
+	FTM.draw(screenWidth, screenHeight);
 	
-	FTM.draw();
+	// draw projection
+	ofTranslate(screenWidth, 0);
+	AM.draw(projectorWidth, projectorHeight);
 }
 
 void ofApp::loadSettings() {
