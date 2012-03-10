@@ -538,10 +538,12 @@ void animationManager::drawImageWithInfo(ofImage * temp, faceFeatureAnalysis & f
 
 void animationManager::draw() {
     float scaleAmount = (float) height / camHeight;
-    ofTranslate(width / 2, height / 2);
-    ofScale(scaleAmount, scaleAmount);
-    ofTranslate(-camWidth / 2, -camHeight / 2);
-        
+		ofVec2f sceneCenter(width / 2, height / 2), sceneScale(scaleAmount, scaleAmount), sceneOffset(-camWidth / 2, -camHeight / 2);
+		
+    ofTranslate(sceneCenter);
+    ofScale(sceneScale.x, sceneScale.y);
+    ofTranslate(sceneOffset);
+		
     ofSetColor(255,255,255,100);
 
     //int chin, forehead, lear, rear, reye, leye, nose, mouth;
@@ -559,63 +561,20 @@ void animationManager::draw() {
     pebbleShader.begin();
     pebbleBg.getTextureReference().bind();
     
-    
-    /*
-     uniform float x;
-     uniform float y;
-     uniform float centerx;
-     uniform float centery;
-     */
-    
-    
-    
-    // arrays to hold matrix information
-    
-    GLdouble model_view[16];
-    glGetDoublev(GL_MODELVIEW_MATRIX, model_view);
-    
-    GLdouble projection[16];
-    glGetDoublev(GL_PROJECTION_MATRIX, projection);
-    
-    GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT, viewport);
-	
-    
-    
-    
     ofSeedRandom(0);
     ofSetColor(120,120,120,150);
     ofSetRectMode(OF_RECTMODE_CENTER);
     for (int i = 0; i < circles.size(); i++){
-        
-        GLdouble tx, ty, tz;
-        
-        gluProject(circles[i].getPosition().x, circles[i].getPosition().y, 0, 
-                   model_view, projection, viewport,
-                   &tx, &ty, &tz);
-        
-        
-        pebbleShader.setUniform1f("mx", ofGetMouseX());
-        pebbleShader.setUniform1f("my", ofGetHeight() - ofGetMouseY());
-        pebbleShader.setUniform1f("cx", tx - FTM->width);
-        pebbleShader.setUniform1f("cy", ty);
-        pebbleShader.setUniform1f("width", FTM->width);
-        pebbleShader.setUniform1f("angle", circles[i].getRotation() * DEG_TO_RAD);
-        //dcout << circles[i].getRotation() << endl;
-        
-        
-         // get 3D coordinates based on window coordinates
-         
-        
-        
-        circles[i].draw();  
-        /*float scale = circles[i].getRadius() / 32.0f;
-        ofPushMatrix();
-        ofTranslate(circles[i].getPosition().x, circles[i].getPosition().y);
-        ofRotateZ(circles[i].getRotation());
-        pebbles[i%16].draw(0,0, scale*64, scale*64);
-        ofPopMatrix();
-        */
+        float padding = .2;
+				ofVec2f texCenter;
+				texCenter.x = ofRandom(pebbleBg.getWidth() * padding, pebbleBg.getWidth() * (1 - padding));
+				texCenter.y = ofRandom(pebbleBg.getHeight() * padding, pebbleBg.getHeight() * (1 - padding));
+				ofVec2f pebbleCenter = (circles[i].getPosition() + sceneOffset) * sceneScale + sceneCenter;
+				pebbleShader.setUniform1f("pebbleRotation", circles[i].getRotation() * DEG_TO_RAD);
+        pebbleShader.setUniform2f("texCenter", texCenter.x, texCenter.y);
+        pebbleShader.setUniform2f("pebbleCenter", pebbleCenter.x, height - pebbleCenter.y);
+        pebbleShader.setUniform1f("screenOffset", FTM->width);
+        circles[i].draw();
     }
     ofSetRectMode(OF_RECTMODE_CORNER);
     ofSeedRandom();
