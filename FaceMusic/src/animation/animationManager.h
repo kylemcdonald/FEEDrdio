@@ -8,6 +8,7 @@
 #include "ofxBox2dConvexPoly.h"
 #include "faceTrackerManager.h"
 
+
 typedef struct {
   
     float scaleAdder;
@@ -69,6 +70,9 @@ public:
     
     ofImage pebbles[16];
     
+    
+    ofImage pebbleBg;
+    ofShader pebbleShader;
     
     
     
