@@ -117,7 +117,8 @@ void faceTrackerManager::draw() {
 												"s - save expressions\n" +
 												"l - load expressions\n" +
 												"c - send selected control change\n" +
-												"n - send selected note\n",
+												"n - send selected note\n" +
+												"\\ - send 'flash' note",
 												14, height - 12 * 12);
 	}
 	
@@ -137,7 +138,7 @@ void faceTrackerManager::keyPressed(int key) {
 	if(key == '\t') {
 		enabled = !enabled;
 	}
-	if(key == 'c') {
+	if(key == '\\') {
 		Graph::sendManualNote(96);
 	}
 	if(key == 'r') {
