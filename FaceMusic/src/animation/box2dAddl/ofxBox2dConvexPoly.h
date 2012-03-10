@@ -35,6 +35,7 @@ public:
     float ghettoRadius;
     
     b2PolygonShape shape;
+		ofVboMesh gpuCachedTesselation;
     ofPolyline polyPts;
     float scale;
     

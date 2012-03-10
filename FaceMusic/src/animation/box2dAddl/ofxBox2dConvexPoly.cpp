@@ -101,15 +101,16 @@ void ofxBox2dConvexPoly::setup(b2World * b2dworld, ofPolyline & _line){
     posCent /= OFX_BOX2D_SCALE;
     ghettoRadius    /= OFX_BOX2D_SCALE;
 
-    
-    for (int i = 0; i < vertexCount; i++){
-        vertices[i].x -= pos.x;
-        vertices[i].y -= pos.y;
-        
-        polyPts.addVertex(ofPoint(vertices[i].x, vertices[i].y));
-    }
-    
-    
+	ofPath path;
+	for (int i = 0; i < vertexCount; i++){
+		vertices[i].x -= pos.x;
+		vertices[i].y -= pos.y;
+		ofVec2f cur(vertices[i].x, vertices[i].y);
+		polyPts.addVertex(cur);
+		path.lineTo(cur);
+	}
+	gpuCachedTesselation = path.getTessellation();
+	
     
     float x = pos.x ;
     float y = pos.y ;
@@ -121,7 +122,7 @@ void ofxBox2dConvexPoly::setup(b2World * b2dworld, ofPolyline & _line){
 	
 	// these are used to create the shape
 	
-    shape.Set(vertices, vertexCount);
+	shape.Set(vertices, vertexCount);
     
     delete vertices;
     
@@ -221,22 +222,13 @@ void ofxBox2dConvexPoly::addRepulsionForce(ofVec2f pt, float amt) {
 
 //------------------------------------------------
 void ofxBox2dConvexPoly::draw() {
-	
 	if(!isBody()) return;
 	
-	    
-    
-    ofPushMatrix();
+	ofPushMatrix();
 	ofTranslate(getPosition().x, getPosition().y, 0);
-    ofRotate(getRotation(), 0, 0, 1);
-    ofBeginShape();
-    for (int i = 0; i < shape.GetVertexCount(); i++){
-        ofVertex(shape.GetVertex(i).x*OFX_BOX2D_SCALE*scale, shape.GetVertex(i).y*OFX_BOX2D_SCALE*scale);
-    }
-    ofEndShape();
-    ofPopMatrix();
-    
-
-	
+	ofRotate(getRotation(), 0, 0, 1);
+	ofScale(OFX_BOX2D_SCALE*scale, OFX_BOX2D_SCALE*scale);
+	gpuCachedTesselation.draw();
+	ofPopMatrix();
 }
 
