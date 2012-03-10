@@ -59,7 +59,7 @@ void animationManager::loadImageSet(vector < ofImage * > & imgs, string partName
 
 void animationManager::setup() {
     
-    //pebbleShader.load("", "pebble.shader");
+    pebbleShader.load("", "shaders/pebble.frag");
     
 	ofxXmlSettings xml;
 	xml.loadFile("settings.xml");
@@ -199,7 +199,7 @@ void animationManager::setup() {
     }
     
     
-    //pebbleBg.loadImage("pebble_bg/b.jpeg");
+    pebbleBg.loadImage("pebble_bg/depositphotos_6841792-Old-newspaper-background.jpeg");
     
     
 }
@@ -245,6 +245,10 @@ void transform ( ofxBox2dConvexPoly & circle, faceFeatureAnalysis & ffa, transfo
 
 void animationManager::update() {
 	
+    if (ofGetFrameNum() % 30 == 0){
+        pebbleShader.load("", "shaders/pebble.frag");
+    }
+    
     if (FTM->tracker.getFound()){
         presence = 0.6f * presence + 0.4f * 1.0;
     } else {
@@ -534,10 +538,12 @@ void animationManager::drawImageWithInfo(ofImage * temp, faceFeatureAnalysis & f
 
 void animationManager::draw() {
     float scaleAmount = (float) height / camHeight;
-		ofTranslate(width / 2, height / 2);
-    ofScale(scaleAmount, scaleAmount);
-		ofTranslate(-camWidth / 2, -camHeight / 2);
-        
+		ofVec2f sceneCenter(width / 2, height / 2), sceneScale(scaleAmount, scaleAmount), sceneOffset(-camWidth / 2, -camHeight / 2);
+		
+    ofTranslate(sceneCenter);
+    ofScale(sceneScale.x, sceneScale.y);
+    ofTranslate(sceneOffset);
+		
     ofSetColor(255,255,255,100);
 
     //int chin, forehead, lear, rear, reye, leye, nose, mouth;
@@ -552,27 +558,29 @@ void animationManager::draw() {
     drawImageWithInfo(faceImages[rear][which[rear] % faceImages[rear].size()], FA->rEar, polys[rear],  offsets[rear],  2.0, true, 180);
 
     
+    pebbleShader.begin();
+    pebbleBg.getTextureReference().bind();
     
-    
-    //pebbleBg.getTextureReference().bind();
-    
+    ofSeedRandom(0);
     ofSetColor(120,120,120,150);
     ofSetRectMode(OF_RECTMODE_CENTER);
     for (int i = 0; i < circles.size(); i++){
-        circles[i].draw();  
-        /*float scale = circles[i].getRadius() / 32.0f;
-        ofPushMatrix();
-        ofTranslate(circles[i].getPosition().x, circles[i].getPosition().y);
-        ofRotateZ(circles[i].getRotation());
-        pebbles[i%16].draw(0,0, scale*64, scale*64);
-        ofPopMatrix();
-        */
+        float padding = .2;
+				ofVec2f texCenter;
+				texCenter.x = ofRandom(pebbleBg.getWidth() * padding, pebbleBg.getWidth() * (1 - padding));
+				texCenter.y = ofRandom(pebbleBg.getHeight() * padding, pebbleBg.getHeight() * (1 - padding));
+				ofVec2f pebbleCenter = (circles[i].getPosition() + sceneOffset) * sceneScale + sceneCenter;
+				pebbleShader.setUniform1f("pebbleRotation", circles[i].getRotation() * DEG_TO_RAD);
+        pebbleShader.setUniform2f("texCenter", texCenter.x, texCenter.y);
+        pebbleShader.setUniform2f("pebbleCenter", pebbleCenter.x, height - pebbleCenter.y);
+        pebbleShader.setUniform1f("screenOffset", FTM->width);
+        circles[i].draw();
     }
     ofSetRectMode(OF_RECTMODE_CORNER);
+    ofSeedRandom();
     
-    
-    //pebbleBg.getTextureReference().unbind();
-    
+    pebbleBg.getTextureReference().unbind();
+    pebbleShader.end();
     
     
 
