@@ -1,14 +1,15 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxGui.h"
+#include "PebbleMaker.h"
 
 class ofApp : public ofBaseApp {
 public:
 	void setup();
 	void update();
 	void draw();
-	void generate();
 	
-	ofPolyline base;
-	ofPath inner, outer;
+	ofxPanel gui;
+	ofPath inner;
 };
