@@ -572,7 +572,7 @@ void animationManager::draw() {
 				ofVec2f pebbleCenter = (circles[i].getPosition() + sceneOffset) * sceneScale + sceneCenter;
 				pebbleShader.setUniform1f("pebbleRotation", circles[i].getRotation() * DEG_TO_RAD);
         pebbleShader.setUniform2f("texCenter", texCenter.x, texCenter.y);
-        pebbleShader.setUniform2f("pebbleCenter", pebbleCenter.x, height - pebbleCenter.y);
+        pebbleShader.setUniform2f("pebbleCenter", pebbleCenter.x, ofGetHeight() - pebbleCenter.y);
         pebbleShader.setUniform1f("screenOffset", FTM->width);
         circles[i].draw();
     }
