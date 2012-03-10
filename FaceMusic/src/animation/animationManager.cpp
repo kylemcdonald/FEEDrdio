@@ -59,7 +59,7 @@ void animationManager::loadImageSet(vector < ofImage * > & imgs, string partName
 
 void animationManager::setup() {
     
-    //pebbleShader.load("", "pebble.shader");
+    pebbleShader.load("", "shaders/pebble.frag");
     
 	ofxXmlSettings xml;
 	xml.loadFile("settings.xml");
@@ -199,7 +199,7 @@ void animationManager::setup() {
     }
     
     
-    //pebbleBg.loadImage("pebble_bg/b.jpeg");
+    pebbleBg.loadImage("pebble_bg/depositphotos_6841792-Old-newspaper-background.jpeg");
     
     
 }
@@ -245,6 +245,10 @@ void transform ( ofxBox2dConvexPoly & circle, faceFeatureAnalysis & ffa, transfo
 
 void animationManager::update() {
 	
+    if (ofGetFrameNum() % 30 == 0){
+        pebbleShader.load("", "shaders/pebble.frag");
+    }
+    
     if (FTM->tracker.getFound()){
         presence = 0.6f * presence + 0.4f * 1.0;
     } else {
@@ -534,9 +538,9 @@ void animationManager::drawImageWithInfo(ofImage * temp, faceFeatureAnalysis & f
 
 void animationManager::draw() {
     float scaleAmount = (float) height / camHeight;
-		ofTranslate(width / 2, height / 2);
+    ofTranslate(width / 2, height / 2);
     ofScale(scaleAmount, scaleAmount);
-		ofTranslate(-camWidth / 2, -camHeight / 2);
+    ofTranslate(-camWidth / 2, -camHeight / 2);
         
     ofSetColor(255,255,255,100);
 
@@ -552,13 +556,58 @@ void animationManager::draw() {
     drawImageWithInfo(faceImages[rear][which[rear] % faceImages[rear].size()], FA->rEar, polys[rear],  offsets[rear],  2.0, true, 180);
 
     
+    pebbleShader.begin();
+    pebbleBg.getTextureReference().bind();
     
     
-    //pebbleBg.getTextureReference().bind();
+    /*
+     uniform float x;
+     uniform float y;
+     uniform float centerx;
+     uniform float centery;
+     */
     
+    
+    
+    // arrays to hold matrix information
+    
+    GLdouble model_view[16];
+    glGetDoublev(GL_MODELVIEW_MATRIX, model_view);
+    
+    GLdouble projection[16];
+    glGetDoublev(GL_PROJECTION_MATRIX, projection);
+    
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+	
+    
+    
+    
+    ofSeedRandom(0);
     ofSetColor(120,120,120,150);
     ofSetRectMode(OF_RECTMODE_CENTER);
     for (int i = 0; i < circles.size(); i++){
+        
+        GLdouble tx, ty, tz;
+        
+        gluProject(circles[i].getPosition().x, circles[i].getPosition().y, 0, 
+                   model_view, projection, viewport,
+                   &tx, &ty, &tz);
+        
+        
+        pebbleShader.setUniform1f("mx", ofGetMouseX());
+        pebbleShader.setUniform1f("my", ofGetHeight() - ofGetMouseY());
+        pebbleShader.setUniform1f("cx", tx - FTM->width);
+        pebbleShader.setUniform1f("cy", ty);
+        pebbleShader.setUniform1f("width", FTM->width);
+        pebbleShader.setUniform1f("angle", circles[i].getRotation() * DEG_TO_RAD);
+        //dcout << circles[i].getRotation() << endl;
+        
+        
+         // get 3D coordinates based on window coordinates
+         
+        
+        
         circles[i].draw();  
         /*float scale = circles[i].getRadius() / 32.0f;
         ofPushMatrix();
@@ -569,10 +618,10 @@ void animationManager::draw() {
         */
     }
     ofSetRectMode(OF_RECTMODE_CORNER);
+    ofSeedRandom();
     
-    
-    //pebbleBg.getTextureReference().unbind();
-    
+    pebbleBg.getTextureReference().unbind();
+    pebbleShader.end();
     
     
 
