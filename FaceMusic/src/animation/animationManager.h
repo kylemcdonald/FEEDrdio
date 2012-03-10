@@ -51,8 +51,10 @@ public:
     //------------------------------------------------ box 2d
     ofxBox2d box2d;
     vector <ofxBox2dConvexPoly >		polys;
-    vector <ofxBox2dCircle >            circles;
+    vector <ofxBox2dConvexPoly >            circles;
 
+    //ofPath path = PebbleMaker::generate();
+    
     
     
     //------------------------------------------------ box 2d

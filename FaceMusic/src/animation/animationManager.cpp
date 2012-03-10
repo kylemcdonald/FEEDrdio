@@ -1,10 +1,14 @@
 #include "animationManager.h"
+#include "PebbleMaker.h"
+
 
 using namespace ofxCv;
 using namespace cv;
 
 
 void animationManager::loadImageSet(vector < ofImage * > & imgs, string partName, ofPolyline & maskShape){
+    
+    
     
     
     ofImage mask;
@@ -170,11 +174,28 @@ void animationManager::setup() {
     
     
     for (int i = 0; i < 60; i++){
-        float r = ofRandom(3.5,11);		// a random radius 4px - 20px
+        /*float r = ofRandom(3.5,11);		// a random radius 4px - 20px
         ofxBox2dCircle circle;
         circle.setPhysics(1.0, 0.53, 0.1);
 		circle.setup(box2d.getWorld(), 300,300, r);
-		circles.push_back(circle);
+		circles.push_back(circle);*/
+        
+        ofPolyline path = PebbleMaker::generate();
+        //ofPolyline pl = path.getOutline()[0];
+        for (int i = 0; i < path.getVertices().size(); i++){
+            path.getVertices()[i] *= 100.0;
+            path.getVertices()[i] += ofPoint(200,200);
+        }
+        //cout << ofPolyline.getVertices()[0] << endl;
+        ofPolyline pl2 = path.getSmoothed(5);
+        ofPolyline pl3 = pl2.getResampledByCount(13);
+        //maskPolys.push_back(temp);
+        ofxBox2dConvexPoly poly;
+        poly.setPhysics(1.0, 0.53, 0.1);
+        poly.setup(box2d.getWorld(), pl3);
+        poly.setScale(ofRandom(0.025, 0.22));
+        circles.push_back(poly);
+        
     }
     
     
@@ -231,7 +252,7 @@ void animationManager::update() {
     }
     
     // where the pebbles want to go! 
-    ofPoint facePoint = FTM->tracker.getPosition();
+    ofPoint facePoint = FTM->tracker.getPosition() - ofPoint(0,100);
 
     
   
@@ -436,7 +457,7 @@ void animationManager::update() {
         for (int i = 0; i < circles.size(); i++){
             
            
-            circles[i].body->SetLinearDamping(0.4);
+            circles[i].body->SetLinearDamping(0.04);
             circles[i].addAttractionPoint(facePoint.x, facePoint.y, 4);
             //(diff.x, diff.y);
             b2Filter filter;
@@ -538,14 +559,14 @@ void animationManager::draw() {
     ofSetColor(120,120,120,150);
     ofSetRectMode(OF_RECTMODE_CENTER);
     for (int i = 0; i < circles.size(); i++){
-        //circles[i].draw();  
-        float scale = circles[i].getRadius() / 32.0f;
+        circles[i].draw();  
+        /*float scale = circles[i].getRadius() / 32.0f;
         ofPushMatrix();
         ofTranslate(circles[i].getPosition().x, circles[i].getPosition().y);
         ofRotateZ(circles[i].getRotation());
         pebbles[i%16].draw(0,0, scale*64, scale*64);
         ofPopMatrix();
-        
+        */
     }
     ofSetRectMode(OF_RECTMODE_CORNER);
     

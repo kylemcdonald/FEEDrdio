@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxGui.h"
+//#include "ofxGui.h"
 #include "PebbleMaker.h"
 
 class ofApp : public ofBaseApp {
@@ -10,6 +10,6 @@ public:
 	void update();
 	void draw();
 	
-	ofxPanel gui;
+	//ofxPanel gui;
 	ofPath inner;
 };
