@@ -548,9 +548,13 @@ void animationManager::draw() {
 		ofVec2f sceneCenter(width / 2, height / 2), sceneScale(scaleAmount, scaleAmount), sceneOffset(-camWidth / 2, -camHeight / 2);
 		
     
+    
+    //------------------------------------------------------------------------------ 
+    // smooth out presence
     presenceSmoothed = 0.99f * presenceSmoothed + 0.01 * presence;
     
-
+    // calc centroid of objects.  every one and a while a face part is outside of bounds (because it changes bounce group when face is present, it can fall offscreen until the next face). 
+    
     ofPoint centroidOfObject;
     float stdDeviation;
     int countObj = 0;
@@ -565,6 +569,8 @@ void animationManager::draw() {
     
     centroidOfObject /= (float)( MAX(1,countObj));
     
+    // calc std deviation. 
+    
     for (int i = 0; i < polys.size(); i++){
         if (bounds.inside(polys[i].getPosition())){
             stdDeviation +=  pow((centroidOfObject - polys[i].getPosition()).length(),2);
@@ -573,25 +579,31 @@ void animationManager::draw() {
 
     stdDeviation = sqrt(stdDeviation / (float)( MAX(1,countObj)));
     
+    // smooth them both out
     
     centroidSmoothed = 0.9f * centroidSmoothed + 0.1f * centroidOfObject;
     stdDevSmoothed = 0.9f * stdDevSmoothed + 0.1f * stdDeviation;
     
+    // use stdDev to figure out how much to scale. 
+    
     float centerAmount = (camWidth / (stdDevSmoothed*2)) * 0.1 * presenceSmoothed;
     
-    //cout << centroidOfObject << endl;
-    
-    //float centerAmount = ofMap(ofGetMouseY(), 0,ofGetHeight(), 0,1);
-    // find the centroid and std dev. 
-    // translate there, scale. 
+    //------------------------------------------------------------------------------ 
    
+    // this is the normal translate and scale
+    
     float scalex = sceneScale.x;
     float scaley = sceneScale.y;
     ofTranslate(sceneCenter);
     ofScale(scalex, scaley);
     ofTranslate(sceneOffset);
+   
+    //------------------------------------------------------------------------------ 
     
-    // figure out where the centroid 
+    // figure out where the center of the screen is in this new coordinate space
+    // also the centroid, etc. 
+    // lots of trial and error math here, not sure if it's right. there's a draw centroid at the bottom of draw for debugging. 
+    
     ofVec2f centerScreen = (ofPoint(camWidth/2, camHeight/2) + sceneOffset) * sceneScale + sceneCenter;
     ofVec2f centroidOfObject2 = (centroidSmoothed + sceneOffset) * sceneScale + sceneCenter;
     ofVec2f diff = centerScreen - centroidOfObject2;
@@ -601,16 +613,9 @@ void animationManager::draw() {
     ofScale(1+centerAmount, 1+centerAmount);
     ofTranslate(diff /= (1+centerAmount));
     
-    //ofPoint tx = (((ofPoint(ofGetMouseX(), ofGetMouseY()) + sceneOffset) * sceneScale + sceneCenter) + (-centroidOfObject * centerAmount)) * (1+centerAmount);
+    //------------------------------------------------------------------------------ 
     
     
-    //ofPoint temp = ofPoint (ofGetMouseX(), ofGetMouseY());
-    
-    //temp = (((temp) * (1+centerAmount) + (-centroidOfObject * centerAmount)) + sceneOffset) * sceneScale + sceneCenter;
-    
-   
-    //
-    //ofTranslate( (width/2)/(1+centerAmount), (height/2)/(1+centerAmount));
     
     
     ofSetColor(255,255,255,100);
