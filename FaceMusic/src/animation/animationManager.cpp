@@ -72,6 +72,9 @@ void animationManager::setup() {
 	width = xml.getValue("width", 640);
 	height = xml.getValue("height", 480);
 	xml.popTag();
+    
+    
+    //fbo.allocate(width, height); 
 	
     ofEnableAlphaBlending();
     
@@ -201,6 +204,10 @@ void animationManager::setup() {
     
     pebbleBg.loadImage("pebble_bg/depositphotos_6841792-Old-newspaper-background.jpeg");
     
+    centroidSmoothed.set(camWidth/2, camHeight/2);
+    presenceSmoothed = 0;
+    stdDevSmoothed = 0;
+    
     
 }
 
@@ -252,7 +259,7 @@ void animationManager::update() {
     if (FTM->tracker.getFound()){
         presence = 0.6f * presence + 0.4f * 1.0;
     } else {
-        presence = 0.6f * presence + 0.6f * 0.0;
+        presence = 0.4f * presence + 0.6f * 0.0;
     }
     
     // where the pebbles want to go! 
@@ -540,10 +547,72 @@ void animationManager::draw() {
     float scaleAmount = (float) height / camHeight;
 		ofVec2f sceneCenter(width / 2, height / 2), sceneScale(scaleAmount, scaleAmount), sceneOffset(-camWidth / 2, -camHeight / 2);
 		
+    
+    presenceSmoothed = 0.99f * presenceSmoothed + 0.01 * presence;
+    
+
+    ofPoint centroidOfObject;
+    float stdDeviation;
+    int countObj = 0;
+    ofRectangle bounds;
+    bounds.set(0,0,camWidth, camHeight);
+    for (int i = 0; i < polys.size(); i++){
+        if (bounds.inside(polys[i].getPosition())){
+            countObj++;
+            centroidOfObject += polys[i].getPosition();
+        }
+    }
+    
+    centroidOfObject /= (float)( MAX(1,countObj));
+    
+    for (int i = 0; i < polys.size(); i++){
+        if (bounds.inside(polys[i].getPosition())){
+            stdDeviation +=  pow((centroidOfObject - polys[i].getPosition()).length(),2);
+        }
+    }
+
+    stdDeviation = sqrt(stdDeviation / (float)( MAX(1,countObj)));
+    
+    
+    centroidSmoothed = 0.9f * centroidSmoothed + 0.1f * centroidOfObject;
+    stdDevSmoothed = 0.9f * stdDevSmoothed + 0.1f * stdDeviation;
+    
+    float centerAmount = (camWidth / (stdDevSmoothed*2)) * 0.1 * presenceSmoothed;
+    
+    //cout << centroidOfObject << endl;
+    
+    //float centerAmount = ofMap(ofGetMouseY(), 0,ofGetHeight(), 0,1);
+    // find the centroid and std dev. 
+    // translate there, scale. 
+   
+    float scalex = sceneScale.x;
+    float scaley = sceneScale.y;
     ofTranslate(sceneCenter);
-    ofScale(sceneScale.x, sceneScale.y);
+    ofScale(scalex, scaley);
     ofTranslate(sceneOffset);
-		
+    
+    // figure out where the centroid 
+    ofVec2f centerScreen = (ofPoint(camWidth/2, camHeight/2) + sceneOffset) * sceneScale + sceneCenter;
+    ofVec2f centroidOfObject2 = (centroidSmoothed + sceneOffset) * sceneScale + sceneCenter;
+    ofVec2f diff = centerScreen - centroidOfObject2;
+    diff *= centerAmount;
+    
+    ofTranslate(-centroidOfObject * centerAmount);
+    ofScale(1+centerAmount, 1+centerAmount);
+    ofTranslate(diff /= (1+centerAmount));
+    
+    //ofPoint tx = (((ofPoint(ofGetMouseX(), ofGetMouseY()) + sceneOffset) * sceneScale + sceneCenter) + (-centroidOfObject * centerAmount)) * (1+centerAmount);
+    
+    
+    //ofPoint temp = ofPoint (ofGetMouseX(), ofGetMouseY());
+    
+    //temp = (((temp) * (1+centerAmount) + (-centroidOfObject * centerAmount)) + sceneOffset) * sceneScale + sceneCenter;
+    
+   
+    //
+    //ofTranslate( (width/2)/(1+centerAmount), (height/2)/(1+centerAmount));
+    
+    
     ofSetColor(255,255,255,100);
 
     //int chin, forehead, lear, rear, reye, leye, nose, mouth;
@@ -569,8 +638,13 @@ void animationManager::draw() {
 				ofVec2f texCenter;
 				texCenter.x = ofRandom(pebbleBg.getWidth() * padding, pebbleBg.getWidth() * (1 - padding));
 				texCenter.y = ofRandom(pebbleBg.getHeight() * padding, pebbleBg.getHeight() * (1 - padding));
-				ofVec2f pebbleCenter = (circles[i].getPosition() + sceneOffset) * sceneScale + sceneCenter;
-				pebbleShader.setUniform1f("pebbleRotation", circles[i].getRotation() * DEG_TO_RAD);
+				
+        
+                ofVec2f pebbleCenter =  (((circles[i].getPosition() + (diff /= (1+centerAmount))) * (1+centerAmount) + (-centroidOfObject * centerAmount)) + sceneOffset) * sceneScale + sceneCenter;
+            
+                
+        
+                pebbleShader.setUniform1f("pebbleRotation", circles[i].getRotation() * DEG_TO_RAD);
         pebbleShader.setUniform2f("texCenter", texCenter.x, texCenter.y);
         pebbleShader.setUniform2f("pebbleCenter", pebbleCenter.x, height - pebbleCenter.y);
         pebbleShader.setUniform1f("screenOffset", FTM->width);
@@ -597,6 +671,8 @@ void animationManager::draw() {
     drawImageWithInfo(faceImages[nose][which[nose] % faceImages[nose].size()], FA->nose,  polys[nose], offsets[nose], 2.0, true, 180);
 
 
+    ofSetColor(255,0,0);
+    //ofCircle(centroidOfObject, 10);
     
     
 }

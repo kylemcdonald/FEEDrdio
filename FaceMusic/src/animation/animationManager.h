@@ -76,6 +76,13 @@ public:
     ofImage pebbleBg;
     ofShader pebbleShader;
     
+    ofFbo fbo;
+    
+    
+    ofPoint centroidSmoothed;
+    float presenceSmoothed;
+    float stdDevSmoothed;
+    
     
     
     
