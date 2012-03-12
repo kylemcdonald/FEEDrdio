@@ -609,7 +609,7 @@ void animationManager::draw() {
     ofVec2f diff = centerScreen - centroidOfObject2;
     diff *= centerAmount;
     
-    ofTranslate(-centroidOfObject * centerAmount);
+    ofTranslate(-centroidSmoothed * centerAmount);
     ofScale(1+centerAmount, 1+centerAmount);
     ofTranslate(diff /= (1+centerAmount));
     
@@ -645,7 +645,7 @@ void animationManager::draw() {
 				texCenter.y = ofRandom(pebbleBg.getHeight() * padding, pebbleBg.getHeight() * (1 - padding));
 				
         
-                ofVec2f pebbleCenter =  (((circles[i].getPosition() + (diff /= (1+centerAmount))) * (1+centerAmount) + (-centroidOfObject * centerAmount)) + sceneOffset) * sceneScale + sceneCenter;
+                ofVec2f pebbleCenter =  (((circles[i].getPosition() + (diff /= (1+centerAmount))) * (1+centerAmount) + (-centroidSmoothed * centerAmount)) + sceneOffset) * sceneScale + sceneCenter;
             
                 
         
