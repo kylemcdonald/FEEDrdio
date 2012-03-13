@@ -59,7 +59,7 @@ void animationManager::loadImageSet(vector < ofImage * > & imgs, string partName
 
 void animationManager::setup() {
     
-    pebbleShader.load("", "shaders/pebble.frag");
+    pebbleShader.load("shaders/pebble.vert", "shaders/pebble.frag");
     
 	ofxXmlSettings xml;
 	xml.loadFile("settings.xml");
@@ -201,6 +201,9 @@ void animationManager::setup() {
     
     pebbleBg.loadImage("pebble_bg/depositphotos_6841792-Old-newspaper-background.jpeg");
     
+    centroidSmoothed.set(camWidth/2, camHeight/2);
+    presenceSmoothed = 0;
+    stdDevSmoothed = 0;
     
 }
 
@@ -245,14 +248,14 @@ void transform ( ofxBox2dConvexPoly & circle, faceFeatureAnalysis & ffa, transfo
 
 void animationManager::update() {
 	
-    if (ofGetFrameNum() % 30 == 0){
-        pebbleShader.load("", "shaders/pebble.frag");
+    if (ofGetFrameNum() % 120 == 0){
+        pebbleShader.load("shaders/pebble.vert", "shaders/pebble.frag");
     }
     
     if (FTM->tracker.getFound()){
         presence = 0.6f * presence + 0.4f * 1.0;
     } else {
-        presence = 0.6f * presence + 0.6f * 0.0;
+        presence = 0.4f * presence + 0.6f * 0.0;
     }
     
     // where the pebbles want to go! 
@@ -540,10 +543,81 @@ void animationManager::draw() {
     float scaleAmount = (float) height / camHeight;
 		ofVec2f sceneCenter(width / 2, height / 2), sceneScale(scaleAmount, scaleAmount), sceneOffset(-camWidth / 2, -camHeight / 2);
 		
+    
+    
+    //------------------------------------------------------------------------------ 
+    // smooth out presence
+    presenceSmoothed = 0.99f * presenceSmoothed + 0.01 * presence;
+    
+    // calc centroid of objects.  every one and a while a face part is outside of bounds (because it changes bounce group when face is present, it can fall offscreen until the next face). 
+    
+    ofPoint centroidOfObject;
+    float stdDeviation;
+    int countObj = 0;
+    ofRectangle bounds;
+    bounds.set(0,0,camWidth, camHeight);
+    for (int i = 0; i < polys.size(); i++){
+        if (bounds.inside(polys[i].getPosition())){
+            countObj++;
+            centroidOfObject += polys[i].getPosition();
+        }
+    }
+    
+    centroidOfObject /= (float)( MAX(1,countObj));
+    
+    // calc std deviation. 
+    
+    for (int i = 0; i < polys.size(); i++){
+        if (bounds.inside(polys[i].getPosition())){
+            stdDeviation +=  pow((centroidOfObject - polys[i].getPosition()).length(),2);
+        }
+    }
+
+    stdDeviation = sqrt(stdDeviation / (float)( MAX(1,countObj)));
+    
+    // smooth them both out
+    
+    centroidSmoothed = 0.9f * centroidSmoothed + 0.1f * centroidOfObject;
+    stdDevSmoothed = 0.9f * stdDevSmoothed + 0.1f * stdDeviation;
+    
+    // use stdDev to figure out how much to scale. 
+    
+    float centerAmount = (camWidth / (stdDevSmoothed*2)) * 0.1 * presenceSmoothed;
+    
+    //------------------------------------------------------------------------------ 
+   
+    // this is the normal translate and scale
+    
+    float scalex = sceneScale.x;
+    float scaley = sceneScale.y;
     ofTranslate(sceneCenter);
     ofScale(sceneScale.x, sceneScale.y);
     ofTranslate(sceneOffset);
-		
+   
+    //------------------------------------------------------------------------------ 
+    
+    // figure out where the center of the screen is in this new coordinate space
+    // also the centroid, etc. 
+    // lots of trial and error math here, not sure if it's right. there's a draw centroid at the bottom of draw for debugging. 
+    
+    ofVec2f centerScreen = (ofPoint(camWidth/2, camHeight/2) + sceneOffset) * sceneScale + sceneCenter;
+    ofVec2f centroidOfObject2 = (centroidSmoothed + sceneOffset) * sceneScale + sceneCenter;
+    ofVec2f diff = centerScreen - centroidOfObject2;
+    diff *= centerAmount;
+    
+    ofPoint centerOnCentroid = -centroidSmoothed * centerAmount;
+    float scaleUp = 1+centerAmount;
+    ofPoint backToCenter = diff /= (1+centerAmount);
+    
+    ofTranslate(centerOnCentroid);
+    ofScale(scaleUp,scaleUp);
+    ofTranslate(backToCenter);
+    
+    //------------------------------------------------------------------------------ 
+    
+    
+    
+    
     ofSetColor(255,255,255,100);
 
     //int chin, forehead, lear, rear, reye, leye, nose, mouth;
@@ -562,20 +636,17 @@ void animationManager::draw() {
     pebbleBg.getTextureReference().bind();
     
     ofSeedRandom(0);
-    ofSetColor(120,120,120,150);
+    ofSetColor(120, 150);
     ofSetRectMode(OF_RECTMODE_CENTER);
-    for (int i = 0; i < circles.size(); i++){
-        float padding = .2;
-				ofVec2f texCenter;
-				texCenter.x = ofRandom(pebbleBg.getWidth() * padding, pebbleBg.getWidth() * (1 - padding));
-				texCenter.y = ofRandom(pebbleBg.getHeight() * padding, pebbleBg.getHeight() * (1 - padding));
-				ofVec2f pebbleCenter = (circles[i].getPosition() + sceneOffset) * sceneScale + sceneCenter;
-				pebbleShader.setUniform1f("pebbleRotation", circles[i].getRotation() * DEG_TO_RAD);
-        pebbleShader.setUniform2f("texCenter", texCenter.x, texCenter.y);
-        pebbleShader.setUniform2f("pebbleCenter", pebbleCenter.x, ofGetHeight() - pebbleCenter.y);
-        pebbleShader.setUniform1f("screenOffset", FTM->width);
-        circles[i].draw();
-    }
+	for (int i = 0; i < circles.size(); i++){
+		float padding = .2;
+		ofVec2f texCenter;
+		texCenter.x = ofRandom(pebbleBg.getWidth() * padding, pebbleBg.getWidth() * (1 - padding));
+		texCenter.y = ofRandom(pebbleBg.getHeight() * padding, pebbleBg.getHeight() * (1 - padding));
+		pebbleShader.setUniform1f("rotation", circles[i].getRotation() * DEG_TO_RAD);
+		pebbleShader.setUniform2f("texCenter", texCenter.x, texCenter.y);
+		circles[i].draw();
+	}
     ofSetRectMode(OF_RECTMODE_CORNER);
     ofSeedRandom();
     
@@ -584,7 +655,7 @@ void animationManager::draw() {
     
     
 
-    ofSetColor(255,255,255,255);
+    ofSetColor(255);
 
     float eyeA = 1.0;
 
@@ -597,6 +668,8 @@ void animationManager::draw() {
     drawImageWithInfo(faceImages[nose][which[nose] % faceImages[nose].size()], FA->nose,  polys[nose], offsets[nose], 2.0, true, 180);
 
 
+    ofSetColor(255,0,0);
+    //ofCircle(centroidOfObject, 10);
     
     
 }
