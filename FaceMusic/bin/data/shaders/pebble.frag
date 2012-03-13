@@ -1,5 +1,4 @@
 uniform sampler2DRect src_tex_unit0;
-
 uniform float rotation;
 uniform vec2 texCenter;
 
