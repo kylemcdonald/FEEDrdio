@@ -59,7 +59,7 @@ void animationManager::loadImageSet(vector < ofImage * > & imgs, string partName
 
 void animationManager::setup() {
     
-    pebbleShader.load("", "shaders/pebble.frag");
+    pebbleShader.load("shaders/pebble.vert", "shaders/pebble.frag");
     
 	ofxXmlSettings xml;
 	xml.loadFile("settings.xml");
@@ -252,8 +252,8 @@ void transform ( ofxBox2dConvexPoly & circle, faceFeatureAnalysis & ffa, transfo
 
 void animationManager::update() {
 	
-    if (ofGetFrameNum() % 30 == 0){
-        pebbleShader.load("", "shaders/pebble.frag");
+    if (ofGetFrameNum() % 120 == 0){
+        pebbleShader.load("shaders/pebble.vert", "shaders/pebble.frag");
     }
     
     if (FTM->tracker.getFound()){
@@ -640,25 +640,17 @@ void animationManager::draw() {
     pebbleBg.getTextureReference().bind();
     
     ofSeedRandom(0);
-    ofSetColor(120,120,120,150);
+    ofSetColor(120, 150);
     ofSetRectMode(OF_RECTMODE_CENTER);
-    for (int i = 0; i < circles.size(); i++){
-        float padding = .2;
-				ofVec2f texCenter;
-				texCenter.x = ofRandom(pebbleBg.getWidth() * padding, pebbleBg.getWidth() * (1 - padding));
-				texCenter.y = ofRandom(pebbleBg.getHeight() * padding, pebbleBg.getHeight() * (1 - padding));
-				
-        
-                ofVec2f pebbleCenter =  ((circles[i].getPosition() + (backToCenter)) * (scaleUp) + (centerOnCentroid) + sceneOffset) * sceneScale + sceneCenter;
-            
-                
-        
-                pebbleShader.setUniform1f("pebbleRotation", circles[i].getRotation() * DEG_TO_RAD);
-        pebbleShader.setUniform2f("texCenter", texCenter.x, texCenter.y);
-        pebbleShader.setUniform2f("pebbleCenter", pebbleCenter.x, height - pebbleCenter.y);
-        pebbleShader.setUniform1f("screenOffset", FTM->width);
-        circles[i].draw();
-    }
+	for (int i = 0; i < circles.size(); i++){
+		float padding = .2;
+		ofVec2f texCenter;
+		texCenter.x = ofRandom(pebbleBg.getWidth() * padding, pebbleBg.getWidth() * (1 - padding));
+		texCenter.y = ofRandom(pebbleBg.getHeight() * padding, pebbleBg.getHeight() * (1 - padding));
+		pebbleShader.setUniform1f("rotation", circles[i].getRotation() * DEG_TO_RAD);
+		pebbleShader.setUniform2f("texCenter", texCenter.x, texCenter.y);
+		circles[i].draw();
+	}
     ofSetRectMode(OF_RECTMODE_CORNER);
     ofSeedRandom();
     
@@ -667,7 +659,7 @@ void animationManager::draw() {
     
     
 
-    ofSetColor(255,255,255,255);
+    ofSetColor(255);
 
     float eyeA = 1.0;
 

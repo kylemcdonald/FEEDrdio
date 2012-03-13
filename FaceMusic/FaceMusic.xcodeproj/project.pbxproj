@@ -18,6 +18,7 @@
 		27065BDD15035637000450CD /* ofxMidiOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27065BD315035637000450CD /* ofxMidiOut.cpp */; };
 		27065BDE15035637000450CD /* RtMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27065BD915035637000450CD /* RtMidi.cpp */; };
 		27065C2C15035831000450CD /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27065C2B15035831000450CD /* CoreMIDI.framework */; };
+		2709D2A0150E89D800C860F8 /* pebble.vert in Sources */ = {isa = PBXBuildFile; fileRef = 2709D29F150E89D800C860F8 /* pebble.vert */; };
 		2750C9EB150967C900F5982B /* b2BroadPhase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2750C988150967C900F5982B /* b2BroadPhase.cpp */; };
 		2750C9EC150967C900F5982B /* b2CollideCircle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2750C98A150967C900F5982B /* b2CollideCircle.cpp */; };
 		2750C9ED150967C900F5982B /* b2CollidePolygon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2750C98B150967C900F5982B /* b2CollidePolygon.cpp */; };
@@ -87,7 +88,7 @@
 		3065832D145EFD1A0015FD7B /* Wrappers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30658323145EFD1A0015FD7B /* Wrappers.cpp */; };
 		30658431145EFD290015FD7B /* opencv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 306583C5145EFD260015FD7B /* opencv.a */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
-		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
+		E4328149138ABC9F0047C5CB /* openFrameworks.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworks.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
 		E45BE97C0E8CC7DD009D7055 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9720E8CC7DD009D7055 /* ApplicationServices.framework */; };
 		E45BE97D0E8CC7DD009D7055 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9730E8CC7DD009D7055 /* AudioToolbox.framework */; };
@@ -160,6 +161,7 @@
 		27065BD915035637000450CD /* RtMidi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RtMidi.cpp; path = ../../../addons/ofxMidi/src/rtmidi/RtMidi.cpp; sourceTree = SOURCE_ROOT; };
 		27065BDA15035637000450CD /* RtMidi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RtMidi.h; path = ../../../addons/ofxMidi/src/rtmidi/RtMidi.h; sourceTree = SOURCE_ROOT; };
 		27065C2B15035831000450CD /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
+		2709D29F150E89D800C860F8 /* pebble.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = pebble.vert; path = bin/data/shaders/pebble.vert; sourceTree = SOURCE_ROOT; };
 		2721E7A91509373F0081F0AC /* ofxFaceTrackerThreaded.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxFaceTrackerThreaded.h; path = ../../../addons/ofxFaceTracker/src/ofxFaceTrackerThreaded.h; sourceTree = SOURCE_ROOT; };
 		2750C983150967C900F5982B /* install.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = install.xml; path = ../../../addons/ofxBox2d/addon/ofxBox2d/install.xml; sourceTree = SOURCE_ROOT; };
 		2750C986150967C900F5982B /* Box2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Box2D.h; path = ../../../addons/ofxBox2d/addon/ofxBox2d/libs/Box2D/Box2D.h; sourceTree = SOURCE_ROOT; };
@@ -382,7 +384,7 @@
 		E45BE9770E8CC7DD009D7055 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		E45BE9790E8CC7DD009D7055 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		E45BE97A0E8CC7DD009D7055 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
-		E4B69B5B0A3A1756003C02F2 /* FaceMusicDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FaceMusicDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4B69B5B0A3A1756003C02F2 /* FaceMusic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FaceMusic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "openFrameworks-Info.plist"; sourceTree = "<group>"; };
 		E4C2424410CC5A17004149E2 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		E4C2424510CC5A17004149E2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
@@ -397,7 +399,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4EB6799138ADC1D00A09F29 /* GLUT.framework in Frameworks */,
-				E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */,
+				E4328149138ABC9F0047C5CB /* openFrameworks.a in Frameworks */,
 				E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */,
 				E45BE97C0E8CC7DD009D7055 /* ApplicationServices.framework in Frameworks */,
 				E45BE97D0E8CC7DD009D7055 /* AudioToolbox.framework in Frameworks */,
@@ -421,6 +423,7 @@
 		116EA7F8150AC722004EBBD3 /* shaders */ = {
 			isa = PBXGroup;
 			children = (
+				2709D29F150E89D800C860F8 /* pebble.vert */,
 				116EA7F9150AC722004EBBD3 /* pebble.frag */,
 			);
 			name = shaders;
@@ -1108,7 +1111,7 @@
 		E4328144138ABC890047C5CB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E4328148138ABC890047C5CB /* openFrameworksDebug.a */,
+				E4328148138ABC890047C5CB /* openFrameworks.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1130,7 +1133,7 @@
 				E4EEC9E9138DF44700A80321 /* openFrameworks */,
 				BB4B014C10F69532006C3DED /* addons */,
 				E45BE5980E8CC70C009D7055 /* frameworks */,
-				E4B69B5B0A3A1756003C02F2 /* FaceMusicDebug.app */,
+				E4B69B5B0A3A1756003C02F2 /* FaceMusic.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1176,7 +1179,7 @@
 			);
 			name = FaceMusic;
 			productName = myOFApp;
-			productReference = E4B69B5B0A3A1756003C02F2 /* FaceMusicDebug.app */;
+			productReference = E4B69B5B0A3A1756003C02F2 /* FaceMusic.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1186,7 +1189,6 @@
 			isa = PBXProject;
 			buildConfigurationList = E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "FaceMusic" */;
 			compatibilityVersion = "Xcode 2.4";
-			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				English,
@@ -1211,10 +1213,10 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		E4328148138ABC890047C5CB /* openFrameworksDebug.a */ = {
+		E4328148138ABC890047C5CB /* openFrameworks.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = openFrameworksDebug.a;
+			path = openFrameworks.a;
 			remoteRef = E4328147138ABC890047C5CB /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -1318,6 +1320,7 @@
 				2750CA13150967C900F5982B /* ofxBox2dPolygon.cpp in Sources */,
 				2750CA14150967C900F5982B /* ofxBox2dRect.cpp in Sources */,
 				116EA7FA150AC722004EBBD3 /* pebble.frag in Sources */,
+				2709D2A0150E89D800C860F8 /* pebble.vert in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
